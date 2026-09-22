@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { HeroVideo } from "@/components/hero-video";
+import { SpinViewer } from "@/components/spin-viewer";
 import { ProductCard } from "@/components/product-card";
 import { featuredProducts, listCourses } from "@/lib/queries";
 import { BRAND, formatTRY } from "@/lib/brand";
@@ -77,16 +77,14 @@ export default async function HomePage() {
           </div>
 
           <div className="md:col-span-6">
-            <div className="relative aspect-4/5 overflow-hidden rounded-none border border-hair bg-sand">
-              <Image
-                src="/urunler/cicekli-canta-1.jpg"
-                alt="Çiçek işlemeli el örgüsü çanta"
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover"
+            <div className="relative aspect-4/5 overflow-hidden border border-hair bg-sand">
+              <SpinViewer
+                dir="/360"
+                frames={24}
+                alt="Çiçek işlemeli el örgüsü çanta — parmağınızla çevirerek her açıdan inceleyin"
+                className="h-full w-full"
               />
-              <span className="absolute bottom-3 left-3 bg-bark/85 px-2.5 py-1 text-[11px] font-medium text-bg backdrop-blur-xs">
+              <span className="pointer-events-none absolute bottom-3 left-3 z-10 bg-bark/85 px-2.5 py-1 text-[11px] font-medium text-bg backdrop-blur-xs">
                 Tek parça · Elde nakış
               </span>
             </div>

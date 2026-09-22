@@ -69,7 +69,15 @@ export function SpinViewer({
       if (!img?.complete || img.naturalWidth === 0) return;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // Cover-fit: the frames are 500x703 and the slot may be any ratio, so
+      // stretching to the canvas box would squash the product.
+      const ir = img.naturalWidth / img.naturalHeight;
+      const cr = canvas.width / canvas.height;
+      const dw = ir > cr ? canvas.height * ir : canvas.width;
+      const dh = ir > cr ? canvas.height : canvas.width / ir;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
     }
 
     function resize() {

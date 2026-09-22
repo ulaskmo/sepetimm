@@ -63,14 +63,19 @@ export function SiteHeader() {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-label={open ? "Menüyü kapat" : "Menüyü aç"}
-            className="flex h-8 w-8 flex-col items-center justify-center gap-[5px] md:hidden"
+            aria-controls="mobil-menu"
+            // 44x44 is the minimum reliable tap target on a phone; the old
+            // 32x32 button was small enough that taps simply missed it.
+            className="-mr-2.5 flex h-11 w-11 flex-col items-center justify-center gap-[5px] md:hidden"
           >
             <span
+              aria-hidden="true"
               className={`h-px w-5 bg-bark transition-transform duration-300 ${
                 open ? "translate-y-[3px] rotate-45" : ""
               }`}
             />
             <span
+              aria-hidden="true"
               className={`h-px w-5 bg-bark transition-transform duration-300 ${
                 open ? "-translate-y-[3px] -rotate-45" : ""
               }`}
@@ -80,6 +85,7 @@ export function SiteHeader() {
       </div>
 
       <div
+        id="mobil-menu"
         className={`overflow-hidden border-t border-hair transition-[max-height] duration-300 md:hidden ${
           open ? "max-h-72" : "max-h-0 border-t-0"
         }`}
@@ -90,7 +96,7 @@ export function SiteHeader() {
               <Link
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="block py-3.5 text-[15px]"
+                className="block py-4 text-[15px]"
               >
                 {item.label}
               </Link>

@@ -4,11 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "./use-reduced-motion";
 
 /**
- * Mobile-reliable hero video component.
- * Ensures seamless inline playback on iOS and Android:
- *  - Explicit autoPlay, muted, playsInline attributes on JSX
- *  - IntersectionObserver to start playback when scrolled into viewport on phones
- *  - Whole-surface tap-to-toggle with clear visible play indicator if paused by battery saver
+ * Inline hero video that behaves on phones.
+ *
+ *  - iOS WebKit needs muted + playsinline set as real attributes before it will
+ *    play inline without going fullscreen.
+ *  - It only loads and plays once scrolled into view, and pauses again on the
+ *    way out: a 4MB clip that autoloads on every page view is a bad trade on
+ *    mobile data, and off-screen playback is wasted battery.
+ *  - A manual pause is respected. Previously the observer restarted playback
+ *    the moment the page moved, so pausing looked broken.
+ *  - A visible control is not optional: WCAG 2.2.2 requires one for anything
+ *    that plays automatically for more than five seconds.
  */
 export function HeroVideo({
   src,
@@ -23,58 +29,60 @@ export function HeroVideo({
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const userPausedRef = useRef(false);
   const calm = usePrefersReducedMotion();
   const [playing, setPlaying] = useState(false);
 
+  /** Resolves false when the browser refuses (low power mode, data saver). */
+  async function attemptPlay(video: HTMLVideoElement): Promise<boolean> {
+    try {
+      await video.play();
+      return true;
+    } catch {
+      // Nothing buffered yet — nudge it once and retry.
+      if (video.readyState === 0) {
+        try {
+          video.load();
+          await video.play();
+          return true;
+        } catch {
+          return false;
+        }
+      }
+      return false;
+    }
+  }
+
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    const container = containerRef.current;
+    if (!video || !container) return;
 
-    // Mobile WebKit strict inline audio-less autoplay flags
+    // Must be real attributes, not just properties, for iOS inline playback.
     video.muted = true;
     video.defaultMuted = true;
-    video.playsInline = true;
+    video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
     video.setAttribute("webkit-playsinline", "");
-    video.setAttribute("muted", "");
 
     const onPlay = () => setPlaying(true);
     const onPause = () => setPlaying(false);
     video.addEventListener("play", onPlay);
     video.addEventListener("pause", onPause);
 
-    if (calm) {
-      video.pause();
-    } else {
-      const promise = video.play();
-      if (promise !== undefined) {
-        promise
-          .then(() => setPlaying(true))
-          .catch(() => {
-            // Autoplay prevented by browser on phone (Low Power Mode)
-            setPlaying(false);
-          });
-      }
-    }
-
-    // Scroll into view trigger on mobile
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !calm) {
-            const p = video.play();
-            if (p !== undefined) {
-              p.then(() => setPlaying(true)).catch(() => {});
-            }
-          }
-        });
+      ([entry]) => {
+        if (calm) return;
+        if (entry.isIntersecting) {
+          // Never fight an explicit pause.
+          if (!userPausedRef.current) void attemptPlay(video);
+        } else if (!video.paused) {
+          video.pause();
+        }
       },
       { threshold: 0.25 }
     );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
+    observer.observe(container);
 
     return () => {
       video.removeEventListener("play", onPlay);
@@ -83,18 +91,16 @@ export function HeroVideo({
     };
   }, [calm]);
 
-  function toggle() {
+  async function toggle() {
     const video = videoRef.current;
     if (!video) return;
     if (video.paused) {
-      video.muted = true;
-      video
-        .play()
-        .then(() => setPlaying(true))
-        .catch(() => {});
+      userPausedRef.current = false;
+      const ok = await attemptPlay(video);
+      setPlaying(ok);
     } else {
+      userPausedRef.current = true;
       video.pause();
-      setPlaying(false);
     }
   }
 
@@ -107,68 +113,58 @@ export function HeroVideo({
       onKeyDown={(e) => {
         if (e.key === " " || e.key === "Enter") {
           e.preventDefault();
-          toggle();
+          void toggle();
         }
       }}
+      aria-label={`${label} — oynatmak veya duraklatmak için dokunun`}
       className={`group relative cursor-pointer select-none overflow-hidden ${className}`}
-      aria-label={`${label} — Oynatmak veya duraklatmak için dokunun`}
     >
       <video
         ref={videoRef}
         src={src}
         poster={poster}
-        autoPlay
         muted
         playsInline
         loop
-        preload="auto"
+        // Not "auto": the clip is only fetched once it scrolls into view.
+        preload="none"
         aria-label={label}
         className="h-full w-full object-cover"
       />
 
-      {/* Tap-to-play overlay: Visible on mobile phones when paused/held by battery saver */}
       {!playing && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xs transition-opacity">
-          <div className="grid h-16 w-16 place-items-center rounded-full border border-white/40 bg-white/20 text-white shadow-xl backdrop-blur-md transition-transform active:scale-95">
-            <svg
-              viewBox="0 0 24 24"
-              width="26"
-              height="26"
-              fill="currentColor"
-              className="translate-x-0.5"
-            >
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center bg-black/35">
+          <span className="grid h-14 w-14 place-items-center rounded-full border border-white/40 bg-black/40 text-white backdrop-blur-sm">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
               <path d="M8 5v14l11-7z" />
             </svg>
-          </div>
-          <span className="mt-3 text-[11px] font-mono font-medium uppercase tracking-[0.2em] text-white drop-shadow">
+          </span>
+          <span className="mt-3 text-[10px] uppercase tracking-[0.22em] text-white">
             Oynatmak için dokunun
           </span>
         </div>
       )}
 
-      {/* Corner Play/Pause Controller */}
-      <div className="absolute bottom-3 right-3 z-10">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            toggle();
-          }}
-          aria-label={playing ? "Videoyu duraklat" : "Videoyu oynat"}
-          className="grid h-10 w-10 place-items-center rounded-full border border-white/30 bg-black/50 text-white backdrop-blur-md transition-opacity hover:bg-black/70"
-        >
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          void toggle();
+        }}
+        aria-label={playing ? "Videoyu duraklat" : "Videoyu oynat"}
+        className="absolute bottom-3 right-3 grid h-11 w-11 place-items-center rounded-full border border-white/30 bg-black/50 text-white backdrop-blur-sm transition-opacity hover:bg-black/70"
+      >
+        <svg viewBox="0 0 12 12" width="11" height="11" fill="currentColor" aria-hidden="true">
           {playing ? (
-            <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" fill="currentColor">
+            <>
               <rect x="2" y="1.5" width="2.6" height="9" />
               <rect x="7.4" y="1.5" width="2.6" height="9" />
-            </svg>
+            </>
           ) : (
-            <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" fill="currentColor">
-              <path d="M2.5 1.5 10.5 6l-8 4.5z" />
-            </svg>
+            <path d="M2.5 1.5 10.5 6l-8 4.5z" />
           )}
-        </button>
-      </div>
+        </svg>
+      </button>
     </div>
   );
 }
