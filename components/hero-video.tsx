@@ -8,9 +8,8 @@ import { usePrefersReducedMotion } from "./use-reduced-motion";
  *
  *  - iOS WebKit needs muted + playsinline set as real attributes before it will
  *    play inline without going fullscreen.
- *  - It only loads and plays once scrolled into view, and pauses again on the
- *    way out: a 4MB clip that autoloads on every page view is a bad trade on
- *    mobile data, and off-screen playback is wasted battery.
+ *  - Only metadata is fetched up front; the body downloads when it plays, and
+ *    it pauses again when scrolled out of view to save battery and data.
  *  - A manual pause is respected. Previously the observer restarted playback
  *    the moment the page moved, so pausing looked broken.
  *  - A visible control is not optional: WCAG 2.2.2 requires one for anything
@@ -33,24 +32,19 @@ export function HeroVideo({
   const calm = usePrefersReducedMotion();
   const [playing, setPlaying] = useState(false);
 
-  /** Resolves false when the browser refuses (low power mode, data saver). */
-  async function attemptPlay(video: HTMLVideoElement): Promise<boolean> {
-    try {
-      await video.play();
-      return true;
-    } catch {
-      // Nothing buffered yet — nudge it once and retry.
-      if (video.readyState === 0) {
-        try {
-          video.load();
-          await video.play();
-          return true;
-        } catch {
-          return false;
-        }
-      }
-      return false;
-    }
+  /**
+   * Starts playback. Every call that must count as a user gesture has to reach
+   * video.play() synchronously — awaiting anything first ends the gesture and
+   * the browser refuses. So load() is called inline, not in a retry after an
+   * await, and the promise is only used to report the outcome.
+   */
+  function startPlayback(video: HTMLVideoElement) {
+    video.muted = true;
+    // With preload="metadata" there may be no media yet; kick it off in the
+    // same tick so play() still rides the gesture.
+    if (video.readyState === 0) video.load();
+    const p = video.play();
+    if (p) p.then(() => setPlaying(true)).catch(() => setPlaying(false));
   }
 
   useEffect(() => {
@@ -75,7 +69,7 @@ export function HeroVideo({
         if (calm) return;
         if (entry.isIntersecting) {
           // Never fight an explicit pause.
-          if (!userPausedRef.current) void attemptPlay(video);
+          if (!userPausedRef.current) startPlayback(video);
         } else if (!video.paused) {
           video.pause();
         }
@@ -91,13 +85,13 @@ export function HeroVideo({
     };
   }, [calm]);
 
-  async function toggle() {
+  // Not async: an await before play() would end the user gesture.
+  function toggle() {
     const video = videoRef.current;
     if (!video) return;
     if (video.paused) {
       userPausedRef.current = false;
-      const ok = await attemptPlay(video);
-      setPlaying(ok);
+      startPlayback(video);
     } else {
       userPausedRef.current = true;
       video.pause();
@@ -113,7 +107,7 @@ export function HeroVideo({
       onKeyDown={(e) => {
         if (e.key === " " || e.key === "Enter") {
           e.preventDefault();
-          void toggle();
+          toggle();
         }
       }}
       aria-label={`${label} — oynatmak veya duraklatmak için dokunun`}
@@ -126,8 +120,8 @@ export function HeroVideo({
         muted
         playsInline
         loop
-        // Not "auto": the clip is only fetched once it scrolls into view.
-        preload="none"
+        // Cheap headers only — the 4MB body is still deferred until play.
+        preload="metadata"
         aria-label={label}
         className="h-full w-full object-cover"
       />
@@ -149,7 +143,7 @@ export function HeroVideo({
         type="button"
         onClick={(e) => {
           e.stopPropagation();
-          void toggle();
+          toggle();
         }}
         aria-label={playing ? "Videoyu duraklat" : "Videoyu oynat"}
         className="absolute bottom-3 right-3 grid h-11 w-11 place-items-center rounded-full border border-white/30 bg-black/50 text-white backdrop-blur-sm transition-opacity hover:bg-black/70"
