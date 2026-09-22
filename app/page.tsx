@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Hero } from "@/components/hero";
+import { HeroVideo } from "@/components/hero-video";
 import { ProductCard } from "@/components/product-card";
 import { Reveal, Stagger, StaggerItem, WeaveDivider } from "@/components/motion-primitives";
 import { featuredProducts, listCourses } from "@/lib/queries";
@@ -40,14 +41,15 @@ export default async function HomePage() {
   return (
     <>
       <Hero
-        image="/urunler/hasir-oval-sepet.jpg"
-        imageAlt="Kapaklı oval hasır sepet, keten astar ve dantel detaylı"
+        video="/video/annem-sepet.mp4"
+        poster="/video/annem-sepet-poster.jpg"
+        mediaAlt="Çiçek işlemeli el örgüsü çanta, dönen platformda her açıdan gösteriliyor"
       />
 
       {/* Süreç */}
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 md:py-28">
         <Reveal>
-          <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Nasıl yapılıyor</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Kağıt sepetler nasıl yapılıyor</p>
           <h2 className="mt-4 max-w-2xl font-display text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-tight">
             Bir gazete sayfasından sepete giden yol
           </h2>
@@ -64,6 +66,15 @@ export default async function HomePage() {
             </StaggerItem>
           ))}
         </Stagger>
+
+        <Reveal className="mt-14">
+          <HeroVideo
+            src="/video/orgu-detay.mp4"
+            poster="/video/orgu-detay-poster.jpg"
+            label="Ellerin kağıt şeritleri örerek sepet dokusu oluşturması"
+            className="aspect-video w-full rounded-[1.75rem] shadow-[var(--shadow)]"
+          />
+        </Reveal>
       </section>
 
       {/* Öne çıkan sepetler */}

@@ -18,11 +18,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: `${BRAND.name} — El Yapımı Geri Dönüşümlü Kağıt Sepetler`,
+    default: `${BRAND.name} — El Yapımı Örgü Sepetler ve Çantalar`,
     template: `%s · ${BRAND.name}`,
   },
   description:
-    "Giresun'dan, geri dönüşümlü kağıt çubuklarla tek tek elde örülen sepetler. Her parça size özel hazırlanır. Ayrıca kendi sepetinizi örmeyi öğreten video kurslar.",
+    "Giresun'dan, tek tek elde örülen sepetler ve çantalar. Her parça size özel hazırlanır. Ayrıca kendi sepetinizi örmeyi öğreten video kurslar.",
   openGraph: {
     type: "website",
     locale: "tr_TR",

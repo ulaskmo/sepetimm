@@ -1,13 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
+import { HeroVideo } from "./hero-video";
 import { WordsUp } from "./motion-primitives";
 import { BRAND } from "@/lib/brand";
 
-export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
+export function Hero({ video, poster, mediaAlt }: { video: string; poster: string; mediaAlt: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
 
@@ -31,10 +31,10 @@ export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
           </p>
 
           <h1 className="font-display text-[clamp(2.4rem,7vw,4.2rem)] font-semibold leading-[1.03] tracking-tight">
-            <WordsUp text="Geri dönüşümlü kağıttan" />
+            <WordsUp text="Tek tek elde örülen" />
             <br />
             <span className="italic text-rattan-deep">
-              <WordsUp text="örülmüş sepetler" />
+              <WordsUp text="sepetler ve çantalar" />
             </span>
           </h1>
 
@@ -42,9 +42,9 @@ export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
             style={{ animationDelay: "0.5s" }}
             className="rise-in mt-6 max-w-md text-base leading-relaxed text-bark-soft sm:text-lg"
           >
-            Atılacak kağıtlar ince çubuklara sarılır, boyanır ve saatler süren bir
-            sabırla örülür. Makine yok, kalıp yok — her sepet elden çıkar ve
-            hiçbiri diğerinin aynısı değildir.
+            Geri dönüşümlü kağıt çubuk, ip ve rafya — hepsi saatler süren bir
+            sabırla, elde örülür. Makine yok, kalıp yok; her parça elden çıkar
+            ve hiçbiri diğerinin aynısı değildir.
           </p>
 
           <div
@@ -55,7 +55,7 @@ export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
               href="/urunler"
               className="group inline-flex items-center gap-2 rounded-full bg-bark px-7 py-3.5 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5"
             >
-              Sepetleri gör
+              Ürünlere bak
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
             <Link
@@ -70,14 +70,7 @@ export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
         <div className="order-1 md:order-2">
           <div className="photo-in relative aspect-4/5 overflow-hidden rounded-[2rem] shadow-[var(--shadow)]">
             <motion.div style={{ y: imageY, scale: imageScale }} className="absolute inset-0">
-              <Image
-                src={image}
-                alt={imageAlt}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 45vw"
-                className="object-cover"
-              />
+              <HeroVideo src={video} poster={poster} label={mediaAlt} className="h-full w-full" />
             </motion.div>
 
             <div
@@ -88,7 +81,7 @@ export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
                 ✿
               </span>
               <p className="text-xs leading-snug">
-                Her sepette <strong className="font-semibold">@{BRAND.handle}</strong> deri
+                Her parçada <strong className="font-semibold">@{BRAND.handle}</strong>{" "}
                 markası — elden çıktığının imzası.
               </p>
             </div>

@@ -3,7 +3,7 @@ export const BRAND = {
   handle: "eda.nintasarimlari",
   instagram: "https://instagram.com/eda.nintasarimlari",
   city: "Giresun",
-  tagline: "Kağıt çubuktan örülen, tamamen el yapımı sepetler",
+  tagline: "Tek tek elde örülen sepetler ve çantalar",
 } as const;
 
 /** Public site URL. Vercel sets VERCEL_PROJECT_PRODUCTION_URL automatically. */

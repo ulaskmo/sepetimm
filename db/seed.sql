@@ -37,3 +37,26 @@ values
     34900, 'orta', 540, false, 3
   )
 on conflict (slug) do nothing;
+
+-- Ana sayfadaki videonun ürünü.
+insert into products (slug, title, description, price_kurus, images, kind, dimensions, published, sort_order)
+values (
+  'cicek-islemeli-orgu-canta',
+  'Çiçek İşlemeli Örgü Çanta',
+  E'Elde örülmüş, çiçek işlemeli omuz çantası.\n\nGövde file örgü tekniğiyle hazırlandı; ön yüzdeki krem çiçekler ve yeşil yapraklar tek tek elde işlendi. İçi kumaş astarlı, tabanı hakiki deri ve metal ayaklı.\n\nGünlük kullanıma, plaja ve yazlık kombinlere uygun.',
+  189000,
+  array[
+    '/urunler/cicekli-canta-1.jpg',
+    '/urunler/cicekli-canta-5.jpg',
+    '/urunler/cicekli-canta-2.jpg',
+    '/urunler/cicekli-canta-4.jpg',
+    '/urunler/cicekli-canta-3.jpg'
+  ],
+  'made_to_order',
+  '32 × 12 × 38 cm (sap dahil 62 cm)',
+  true,
+  0
+)
+on conflict (slug) do nothing;
+
+update products set lead_time_days = 14 where slug = 'cicek-islemeli-orgu-canta';

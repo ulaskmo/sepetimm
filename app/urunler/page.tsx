@@ -7,7 +7,7 @@ import { BRAND } from "@/lib/brand";
 export const metadata: Metadata = {
   title: "Sepetler",
   description:
-    "Geri dönüşümlü kağıt çubuklarla elde örülmüş sepetlerin tamamı. Tek parça ve siparişe özel modeller.",
+    "Tek tek elde örülen sepetler ve çantaların tamamı. Tek parça ve siparişe özel modeller.",
 };
 
 export default async function ProductsPage() {
@@ -19,7 +19,7 @@ export default async function ProductsPage() {
       <Reveal>
         <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Koleksiyon</p>
         <h1 className="mt-4 max-w-2xl font-display text-[clamp(2rem,5vw,3.4rem)] font-semibold leading-[1.05]">
-          Elde örülmüş sepetler
+          Sepetler ve çantalar
         </h1>
         <p className="mt-5 max-w-xl text-base leading-relaxed text-bark-soft">
           {products.length > 0
