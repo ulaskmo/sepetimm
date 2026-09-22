@@ -17,7 +17,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-hair bg-bg/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-hair bg-bg">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-5 py-4 lg:px-10">
         <Link href="/" onClick={() => setOpen(false)} className="flex items-baseline gap-2.5">
           <span className="font-display text-[1.35rem] font-semibold leading-none tracking-tight">
@@ -66,6 +66,7 @@ export function SiteHeader() {
             aria-controls="mobil-menu"
             // 44x44 is the minimum reliable tap target on a phone; the old
             // 32x32 button was small enough that taps simply missed it.
+            style={{ touchAction: "manipulation" }}
             className="-mr-2.5 flex h-11 w-11 flex-col items-center justify-center gap-[5px] md:hidden"
           >
             <span

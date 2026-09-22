@@ -29,9 +29,9 @@ export default async function HomePage() {
   const [products, courses] = await Promise.all([featuredProducts(4), listCourses()]);
 
   return (
-    <div className="space-y-20 py-12 md:space-y-28 md:py-20">
+    <div className="space-y-20 pb-12 md:space-y-28 md:pb-20">
       {/* 1. HERO — sepet arka planda, metin üstünde, telefonda tek ekran */}
-      <section className="relative flex min-h-[calc(100svh-4rem)] items-start overflow-hidden pt-8 md:items-center md:pt-0">
+      <section className="relative flex min-h-[calc(100svh-4rem)] items-start overflow-hidden pt-5 md:items-center md:pt-0">
         {/* Arka plan sepeti. Kesilmiş PNG, beyaz fon yok — sayfanın kendi
             rengi görünüyor. Telefonda alta, geniş ekranda sağa yaslanıyor. */}
         <div
@@ -54,7 +54,7 @@ export default async function HomePage() {
           className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/40 via-bg/85 to-bg md:bg-gradient-to-r md:from-bg md:via-bg/80 md:to-transparent"
         />
 
-        <div className="relative mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 md:py-14">
+        <div className="relative mx-auto w-full max-w-6xl px-4 pb-10 pt-2 sm:px-6 md:py-14">
           <div className="max-w-xl">
             <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">
               Atölye · El Örgüsü
