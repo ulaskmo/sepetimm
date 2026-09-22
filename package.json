@@ -8,8 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node --import ./test/resolve-ts.mjs --test test/*.test.ts",
-    "db:setup": "psql \"$DATABASE_URL\" -f db/schema.sql",
-    "db:seed": "psql \"$DATABASE_URL\" -f db/seed.sql"
+    "db:setup": "node scripts/db.mjs db/schema.sql",
+    "db:seed": "node scripts/db.mjs db/seed.sql db/seed-urunler.sql",
+    "db:all": "node scripts/db.mjs db/schema.sql db/seed-urunler.sql"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
