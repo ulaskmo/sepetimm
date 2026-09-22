@@ -54,7 +54,7 @@ export default async function CoursePayPage({ params }: PageProps<"/odeme/kurs/[
 
   return (
     <div className="mx-auto max-w-lg px-4 py-20 sm:px-6">
-      <div className="rounded-3xl border border-line bg-raised p-8 shadow-[var(--shadow)]">
+      <div className="rounded-none border border-hair bg-raised p-8 shadow-[var(--shadow)]">
         <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Kurs ödemesi</p>
         <h1 className="mt-4 font-display text-2xl font-semibold">{row.course_title}</h1>
 
@@ -63,7 +63,7 @@ export default async function CoursePayPage({ params }: PageProps<"/odeme/kurs/[
             <dt className="text-bark-soft">Erişim e-postası</dt>
             <dd className="font-medium">{row.email}</dd>
           </div>
-          <div className="flex justify-between gap-4 border-t border-line pt-3">
+          <div className="flex justify-between gap-4 border-t border-hair pt-3">
             <dt className="text-bark-soft">Toplam</dt>
             <dd className="text-lg font-semibold">{formatTRY(row.price_kurus)}</dd>
           </div>
@@ -75,7 +75,7 @@ export default async function CoursePayPage({ params }: PageProps<"/odeme/kurs/[
           ))}
           <button
             type="submit"
-            className="w-full rounded-full bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5"
+            className="w-full rounded-sm bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5"
           >
             Shopier ile güvenli öde
           </button>
@@ -106,7 +106,7 @@ function Notice({
       <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-bark-soft">{body}</p>
       <Link
         href={href}
-        className="mt-8 inline-flex rounded-full border border-line px-6 py-3 text-sm font-semibold hover:bg-sand"
+        className="mt-8 inline-flex rounded-sm border border-hair px-6 py-3 text-sm font-semibold hover:bg-sand"
       >
         {cta}
       </Link>

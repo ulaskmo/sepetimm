@@ -18,13 +18,13 @@ export function CourseBuyForm({ slug, signedIn }: { slug: string; signedIn: bool
       <div className="mt-6 space-y-3">
         <Link
           href={`/kayit?devam=${encodeURIComponent(next)}`}
-          className="block rounded-full bg-bark px-6 py-4 text-center text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5"
+          className="block rounded-sm bg-bark px-6 py-4 text-center text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5"
         >
           Hesap oluştur ve satın al
         </Link>
         <Link
           href={`/giris?devam=${encodeURIComponent(next)}`}
-          className="block rounded-full border border-line px-6 py-4 text-center text-sm font-semibold hover:bg-sand"
+          className="block rounded-sm border border-hair px-6 py-4 text-center text-sm font-semibold hover:bg-sand"
         >
           Zaten hesabım var
         </Link>
@@ -56,7 +56,7 @@ export function CourseBuyForm({ slug, signedIn }: { slug: string; signedIn: bool
   return (
     <div className="mt-6 space-y-3">
       {error && (
-        <p role="alert" className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
+        <p role="alert" className="rounded-sm bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
           {error}
         </p>
       )}
@@ -64,7 +64,7 @@ export function CourseBuyForm({ slug, signedIn }: { slug: string; signedIn: bool
         type="button"
         onClick={buy}
         disabled={busy}
-        className="w-full rounded-full bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+        className="w-full rounded-sm bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5 disabled:opacity-60"
       >
         {busy ? "Yönlendiriliyor…" : "Satın al"}
       </button>

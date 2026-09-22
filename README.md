@@ -1,4 +1,4 @@
-# Sepetim — Eda'nın Tasarımları
+# Sepetim
 
 Geri dönüşümlü kağıt çubuklarla elde örülen sepetlerin tanıtıldığı, rezervasyon
 talebi alınan ve video kurs satılan Türkçe site.

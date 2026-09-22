@@ -46,7 +46,7 @@ export function ReservationForm({
   }
 
   return (
-    <div className="rounded-3xl border border-line bg-raised p-7 shadow-[var(--shadow)]">
+    <div className="rounded-none border border-hair bg-raised p-7 shadow-[var(--shadow)]">
       <AnimatePresence mode="wait" initial={false}>
         {state === "sent" ? (
           <motion.div
@@ -60,9 +60,9 @@ export function ReservationForm({
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
-              className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-sage/20 text-2xl"
+              className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-sage/20 text-sage"
             >
-              ✓
+              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none"><path d="M2 8.5 6 12.5 14 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </motion.span>
             <p className="mt-5 font-display text-xl font-semibold">Talebiniz iletildi</p>
             <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-bark-soft">
@@ -97,12 +97,12 @@ export function ReservationForm({
                 rows={3}
                 maxLength={600}
                 placeholder={`${productTitle} hakkında merak ettikleriniz, renk tercihiniz...`}
-                className="w-full resize-none rounded-2xl border border-line bg-bg px-4 py-3 text-sm outline-none transition-colors placeholder:text-bark-soft/55 focus:border-rattan"
+                className="w-full resize-none rounded-sm border border-hair bg-bg px-4 py-3 text-sm outline-none transition-colors placeholder:text-bark-soft/55 focus:border-rattan"
               />
             </label>
 
             {state === "error" && (
-              <p role="alert" className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
+              <p role="alert" className="rounded-sm bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
                 {error}
               </p>
             )}
@@ -110,7 +110,7 @@ export function ReservationForm({
             <button
               type="submit"
               disabled={state === "sending"}
-              className="w-full rounded-full bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
+              className="w-full rounded-sm bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
             >
               {state === "sending" ? "Gönderiliyor…" : "Talep gönder"}
             </button>
@@ -147,7 +147,7 @@ function Field({
         required={required}
         autoComplete={autoComplete}
         maxLength={160}
-        className="w-full rounded-2xl border border-line bg-bg px-4 py-3 text-sm outline-none transition-colors focus:border-rattan"
+        className="w-full rounded-sm border border-hair bg-bg px-4 py-3 text-sm outline-none transition-colors focus:border-rattan"
       />
     </label>
   );

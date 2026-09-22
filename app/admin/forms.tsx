@@ -1,7 +1,7 @@
 import type { Course, Product } from "@/lib/db";
 
 const input =
-  "w-full rounded-xl border border-line bg-bg px-4 py-2.5 text-sm outline-none focus:border-rattan";
+  "w-full rounded-sm border border-hair bg-bg px-4 py-2.5 text-sm outline-none focus:border-rattan";
 
 function Field({
   label,
@@ -38,7 +38,7 @@ export function ProductForm({
   action: (formData: FormData) => Promise<void>;
 }) {
   return (
-    <form action={action} className="grid gap-4 rounded-2xl border border-line bg-raised p-6 sm:grid-cols-2">
+    <form action={action} className="grid gap-4 rounded-sm border border-hair bg-raised p-6 sm:grid-cols-2">
       {product && <input type="hidden" name="id" value={product.id} />}
 
       <Field label="Başlık">
@@ -93,7 +93,7 @@ export function ProductForm({
       <div className="flex flex-wrap items-center gap-6 sm:col-span-2">
         <Check name="published" label="Sitede görünsün" defaultChecked={product?.published ?? true} />
         <Check name="sold" label="Satıldı" defaultChecked={product?.sold ?? false} />
-        <button className="ml-auto rounded-full bg-bark px-7 py-3 text-sm font-semibold text-bg">
+        <button className="ml-auto rounded-sm bg-bark px-7 py-3 text-sm font-semibold text-bg">
           {product ? "Değişiklikleri kaydet" : "Ürünü ekle"}
         </button>
       </div>
@@ -109,7 +109,7 @@ export function CourseForm({
   action: (formData: FormData) => Promise<void>;
 }) {
   return (
-    <form action={action} className="grid gap-4 rounded-2xl border border-line bg-raised p-6 sm:grid-cols-2">
+    <form action={action} className="grid gap-4 rounded-sm border border-hair bg-raised p-6 sm:grid-cols-2">
       {course && <input type="hidden" name="id" value={course.id} />}
 
       <Field label="Başlık">
@@ -161,7 +161,7 @@ export function CourseForm({
 
       <div className="flex flex-wrap items-center gap-6 sm:col-span-2">
         <Check name="published" label="Sitede görünsün" defaultChecked={course?.published ?? false} />
-        <button className="ml-auto rounded-full bg-bark px-7 py-3 text-sm font-semibold text-bg">
+        <button className="ml-auto rounded-sm bg-bark px-7 py-3 text-sm font-semibold text-bg">
           {course ? "Değişiklikleri kaydet" : "Kursu ekle"}
         </button>
       </div>

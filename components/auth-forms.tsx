@@ -6,11 +6,11 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
 const field =
-  "w-full rounded-2xl border border-line bg-bg px-4 py-3 text-sm outline-none transition-colors focus:border-rattan";
+  "w-full rounded-sm border border-hair bg-bg px-4 py-3 text-sm outline-none transition-colors focus:border-rattan";
 
 function FormError({ message }: { message: string }) {
   return (
-    <p role="alert" className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
+    <p role="alert" className="rounded-sm bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
       {message}
     </p>
   );
@@ -77,7 +77,7 @@ export function RegisterForm({ next }: { next?: string }) {
       <button
         type="submit"
         disabled={busy}
-        className="w-full rounded-full bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+        className="w-full rounded-sm bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5 disabled:opacity-60"
       >
         {busy ? "Oluşturuluyor…" : "Hesap oluştur"}
       </button>
@@ -140,10 +140,13 @@ export function LoginForm({ next }: { next?: string }) {
           key="sent"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-8 rounded-3xl border border-line bg-raised p-7 text-center"
+          className="mt-8 rounded-none border border-hair bg-raised p-7 text-center"
         >
-          <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-sage/20 text-xl">
-            ✉
+          <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-sage/20 text-sage">
+            <svg viewBox="0 0 20 16" width="20" height="16" aria-hidden="true" fill="none">
+              <rect x="1" y="1" width="18" height="14" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M1.5 2 10 9l8.5-7" stroke="currentColor" strokeWidth="1.4" />
+            </svg>
           </span>
           <p className="mt-5 font-display text-lg font-semibold">E-postanızı kontrol edin</p>
           <p className="mt-2 text-sm leading-relaxed text-bark-soft">
@@ -175,7 +178,7 @@ export function LoginForm({ next }: { next?: string }) {
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-full bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+            className="w-full rounded-sm bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5 disabled:opacity-60"
           >
             {busy
               ? "Gönderiliyor…"

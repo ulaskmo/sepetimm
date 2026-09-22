@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Reveal, WeaveDivider } from "@/components/motion-primitives";
 import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
@@ -13,15 +12,15 @@ export const metadata: Metadata = {
 export default function StoryPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 md:py-24">
-      <Reveal>
+      <div>
         <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Hikayemiz</p>
         <h1 className="mt-4 font-display text-[clamp(2rem,5vw,3.4rem)] font-semibold leading-[1.05]">
           Çöpe giden kağıt, eve giren sepet
         </h1>
-      </Reveal>
+      </div>
 
-      <Reveal delay={0.1} className="mt-10">
-        <div className="relative aspect-4/3 overflow-hidden rounded-[1.75rem] shadow-[var(--shadow)]">
+      <div className="mt-10">
+        <div className="relative aspect-4/3 overflow-hidden rounded-none shadow-[var(--shadow)]">
           <Image
             src="/urunler/hasir-oval-sepet.jpg"
             alt="Kapaklı oval hasır sepet"
@@ -31,11 +30,11 @@ export default function StoryPage() {
             className="object-cover"
           />
         </div>
-      </Reveal>
+      </div>
 
-      <WeaveDivider className="my-14" />
+      <hr className="my-14 border-0 border-t border-hair" />
 
-      <Reveal className="space-y-6 text-base leading-relaxed text-bark-soft">
+      <div className="space-y-6 text-base leading-relaxed text-bark-soft">
         <p>
           {BRAND.city}&apos;da başlayan küçük bir merak bu. Eskiden çöpe attığımız
           gazete ve dergi sayfalarının, doğru sarıldığında hasır kadar sağlam bir
@@ -57,14 +56,14 @@ export default function StoryPage() {
           Her sepetin altındaki küçük deri marka, işin elden çıktığının imzası.
           Üzerinde <strong className="text-bark">@{BRAND.handle}</strong> yazıyor.
         </p>
-      </Reveal>
+      </div>
 
-      <WeaveDivider className="my-14" />
+      <hr className="my-14 border-0 border-t border-hair" />
 
-      <Reveal className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-3">
         <Link
           href="/urunler"
-          className="rounded-full bg-bark px-7 py-3.5 text-sm font-semibold text-bg"
+          className="rounded-sm bg-bark px-7 py-3.5 text-sm font-semibold text-bg"
         >
           Sepetlere bak
         </Link>
@@ -72,11 +71,11 @@ export default function StoryPage() {
           href={BRAND.instagram}
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-full border border-line px-7 py-3.5 text-sm font-semibold hover:bg-sand"
+          className="rounded-sm border border-hair px-7 py-3.5 text-sm font-semibold hover:bg-sand"
         >
           Instagram&apos;da takip et
         </a>
-      </Reveal>
+      </div>
     </div>
   );
 }

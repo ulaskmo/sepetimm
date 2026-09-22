@@ -79,9 +79,16 @@ export function HeroVideo({
         aria-label={playing ? "Videoyu duraklat" : "Videoyu oynat"}
         className="absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full border border-white/25 bg-black/40 text-white opacity-0 backdrop-blur-md transition-opacity focus-visible:opacity-100 group-hover:opacity-100"
       >
-        <span aria-hidden="true" className="text-sm leading-none">
-          {playing ? "❚❚" : "▶"}
-        </span>
+        <svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true" fill="currentColor">
+          {playing ? (
+            <>
+              <rect x="2" y="1.5" width="2.6" height="9" />
+              <rect x="7.4" y="1.5" width="2.6" height="9" />
+            </>
+          ) : (
+            <path d="M2.5 1.5 10.5 6l-8 4.5z" />
+          )}
+        </svg>
       </button>
     </div>
   );

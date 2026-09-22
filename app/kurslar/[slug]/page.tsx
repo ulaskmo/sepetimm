@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Reveal } from "@/components/motion-primitives";
 import { CourseBuyForm } from "@/components/course-buy-form";
 import { getCourse, ownsCourse } from "@/lib/queries";
 import { currentEmail } from "@/lib/auth";
@@ -29,8 +28,8 @@ export default async function CoursePage({ params }: PageProps<"/kurslar/[slug]"
         ← Tüm kurslar
       </Link>
 
-      <Reveal className="mt-8">
-        <div className="relative aspect-video overflow-hidden rounded-[1.75rem] bg-sand shadow-[var(--shadow)]">
+      <div className="mt-8">
+        <div className="relative aspect-video overflow-hidden rounded-none bg-sand shadow-[var(--shadow)]">
           {course.cover_image ? (
             <Image
               src={course.cover_image}
@@ -44,20 +43,20 @@ export default async function CoursePage({ params }: PageProps<"/kurslar/[slug]"
             <div className="grid h-full place-items-center text-5xl opacity-30">▶</div>
           )}
         </div>
-      </Reveal>
+      </div>
 
       <div className="mt-10 grid gap-10 md:grid-cols-[1.6fr_1fr] md:gap-14">
-        <Reveal>
+        <div>
           <h1 className="font-display text-[clamp(1.9rem,4.5vw,3rem)] font-semibold leading-[1.08]">
             {course.title}
           </h1>
           <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-bark-soft">
             {course.description}
           </p>
-        </Reveal>
+        </div>
 
-        <Reveal delay={0.1}>
-          <div className="rounded-3xl border border-line bg-raised p-7 shadow-[var(--shadow)] md:sticky md:top-28">
+        <div>
+          <div className="rounded-none border border-hair bg-raised p-7 shadow-[var(--shadow)] md:sticky md:top-28">
             {owned ? (
               <>
                 <p className="font-display text-lg font-semibold">Bu kurs sizde</p>
@@ -66,7 +65,7 @@ export default async function CoursePage({ params }: PageProps<"/kurslar/[slug]"
                 </p>
                 <Link
                   href="/hesabim"
-                  className="mt-6 block rounded-full bg-bark px-6 py-4 text-center text-sm font-semibold text-bg"
+                  className="mt-6 block rounded-sm bg-bark px-6 py-4 text-center text-sm font-semibold text-bg"
                 >
                   Kursu izle
                 </Link>
@@ -82,7 +81,7 @@ export default async function CoursePage({ params }: PageProps<"/kurslar/[slug]"
               </>
             )}
           </div>
-        </Reveal>
+        </div>
       </div>
     </div>
   );

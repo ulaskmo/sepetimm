@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Reveal } from "@/components/motion-primitives";
 import { ReservationForm } from "@/components/reservation-form";
 import { getProduct } from "@/lib/queries";
 import { isAvailable } from "@/lib/db";
@@ -34,11 +33,11 @@ export default async function ProductPage({ params }: PageProps<"/urunler/[slug]
       </Link>
 
       <div className="mt-8 grid gap-10 md:grid-cols-2 md:gap-16">
-        <Reveal className="space-y-4">
+        <div className="space-y-4">
           {images.map((src, i) => (
             <div
               key={src}
-              className="relative aspect-4/5 overflow-hidden rounded-[1.75rem] bg-sand shadow-[var(--shadow)]"
+              className="relative aspect-4/5 overflow-hidden rounded-none bg-sand shadow-[var(--shadow)]"
             >
               <Image
                 src={src}
@@ -50,16 +49,16 @@ export default async function ProductPage({ params }: PageProps<"/urunler/[slug]
               />
             </div>
           ))}
-        </Reveal>
+        </div>
 
         <div className="md:sticky md:top-28 md:self-start">
-          <Reveal>
+          <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-sand px-3 py-1 text-[11px] font-medium uppercase tracking-wider">
+              <span className="rounded-sm bg-sand px-3 py-1 text-[11px] font-medium uppercase tracking-wider">
                 {product.kind === "unique" ? "Tek parça" : "Siparişe özel"}
               </span>
               {!available && (
-                <span className="rounded-full bg-bark px-3 py-1 text-[11px] font-semibold text-bg">
+                <span className="rounded-sm bg-bark px-3 py-1 text-[11px] font-semibold text-bg">
                   Satıldı
                 </span>
               )}
@@ -77,7 +76,7 @@ export default async function ProductPage({ params }: PageProps<"/urunler/[slug]
               </p>
             )}
 
-            <dl className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-line bg-line text-sm">
+            <dl className="mt-8 grid gap-px overflow-hidden rounded-sm border border-hair bg-line text-sm">
               {product.dimensions && (
                 <Row label="Ölçüler" value={product.dimensions} />
               )}
@@ -93,9 +92,9 @@ export default async function ProductPage({ params }: PageProps<"/urunler/[slug]
               />
               <Row label="Malzeme" value="Geri dönüşümlü kağıt çubuk, keten astar, pamuk dantel" />
             </dl>
-          </Reveal>
+          </div>
 
-          <Reveal delay={0.1} className="mt-10">
+          <div className="mt-10">
             {available ? (
               <ReservationForm
                 productSlug={product.slug}
@@ -103,20 +102,20 @@ export default async function ProductPage({ params }: PageProps<"/urunler/[slug]
                 priceKurus={product.price_kurus}
               />
             ) : (
-              <div className="rounded-3xl border border-line bg-sand/50 p-7 text-center">
+              <div className="rounded-none border border-hair bg-sand/50 p-7 text-center">
                 <p className="font-display text-lg font-semibold">Bu sepet satıldı</p>
                 <p className="mt-2 text-sm text-bark-soft">
                   Benzerini siparişe özel ördürmek için Instagram&apos;dan yazabilirsiniz.
                 </p>
                 <Link
                   href="/urunler"
-                  className="mt-5 inline-flex rounded-full border border-line px-6 py-3 text-sm font-semibold hover:bg-raised"
+                  className="mt-5 inline-flex rounded-sm border border-hair px-6 py-3 text-sm font-semibold hover:bg-raised"
                 >
                   Müsait sepetlere bak
                 </Link>
               </div>
             )}
-          </Reveal>
+          </div>
         </div>
       </div>
     </div>

@@ -18,11 +18,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: `${BRAND.name} — El Yapımı Örgü Sepetler ve Çantalar`,
+    default: `${BRAND.name} — El Örgüsü Sepetler ve Çantalar`,
     template: `%s · ${BRAND.name}`,
   },
   description:
-    "Giresun'dan, tek tek elde örülen sepetler ve çantalar. Her parça size özel hazırlanır. Ayrıca kendi sepetinizi örmeyi öğreten video kurslar.",
+    "Giresun'dan el örgüsü sepetler ve çantalar. Her parça tek tek örülür; talebiniz onaylanmadan ödeme alınmaz. Ayrıca örmeyi öğreten video kurslar.",
   openGraph: {
     type: "website",
     locale: "tr_TR",

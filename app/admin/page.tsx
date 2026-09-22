@@ -66,14 +66,14 @@ export default async function AdminPage({ searchParams }: PageProps<"/admin">) {
         {reservations.length === 0 ? (
           <Empty>Henüz talep yok.</Empty>
         ) : (
-          <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line">
+          <ul className="divide-y divide-line overflow-hidden rounded-sm border border-hair">
             {reservations.map((r) => (
               <li key={r.public_id} className="flex flex-wrap items-center gap-x-4 gap-y-1 bg-raised px-5 py-4 text-sm">
                 <span className="font-medium">{r.product_title}</span>
                 <span className="text-bark-soft">{r.name} · {r.email}</span>
                 <span className="ml-auto font-medium">{formatTRY(r.price_kurus)}</span>
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${
+                  className={`rounded-sm px-3 py-1 text-xs font-medium ${
                     r.status === "paid"
                       ? "bg-sage/20 text-sage"
                       : r.status === "pending"
@@ -100,7 +100,7 @@ export default async function AdminPage({ searchParams }: PageProps<"/admin">) {
         {products.length === 0 ? (
           <Empty>Henüz ürün yok.</Empty>
         ) : (
-          <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line">
+          <ul className="divide-y divide-line overflow-hidden rounded-sm border border-hair">
             {products.map((p) => (
               <li key={p.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 bg-raised px-5 py-4 text-sm">
                 <span className="font-medium">{p.title}</span>
@@ -131,7 +131,7 @@ export default async function AdminPage({ searchParams }: PageProps<"/admin">) {
         {courses.length === 0 ? (
           <Empty>Henüz kurs yok.</Empty>
         ) : (
-          <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line">
+          <ul className="divide-y divide-line overflow-hidden rounded-sm border border-hair">
             {courses.map((c) => (
               <li key={c.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 bg-raised px-5 py-4 text-sm">
                 <span className="font-medium">{c.title}</span>
@@ -168,10 +168,10 @@ function LoginGate() {
             type="password"
             required
             autoFocus
-            className="w-full rounded-2xl border border-line bg-bg px-4 py-3 text-sm outline-none focus:border-rattan"
+            className="w-full rounded-sm border border-hair bg-bg px-4 py-3 text-sm outline-none focus:border-rattan"
           />
         </label>
-        <button className="w-full rounded-full bg-bark px-6 py-4 text-sm font-semibold text-bg">
+        <button className="w-full rounded-sm bg-bark px-6 py-4 text-sm font-semibold text-bg">
           Giriş yap
         </button>
       </form>
@@ -190,7 +190,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Empty({ children }: { children: React.ReactNode }) {
   return (
-    <p className="rounded-2xl border border-dashed border-line px-5 py-8 text-center text-sm text-bark-soft">
+    <p className="rounded-sm border border-dashed border-hair px-5 py-8 text-center text-sm text-bark-soft">
       {children}
     </p>
   );
@@ -198,6 +198,6 @@ function Empty({ children }: { children: React.ReactNode }) {
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs text-bark-soft">{children}</span>
+    <span className="rounded-sm bg-sand px-2.5 py-0.5 text-xs text-bark-soft">{children}</span>
   );
 }

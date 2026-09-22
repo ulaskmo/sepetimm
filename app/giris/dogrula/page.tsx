@@ -37,7 +37,7 @@ export default async function VerifyPage({ searchParams }: PageProps<"/giris/dog
       </p>
       <Link
         href="/giris"
-        className="mt-8 inline-flex rounded-full bg-bark px-7 py-3.5 text-sm font-semibold text-bg"
+        className="mt-8 inline-flex rounded-sm bg-bark px-7 py-3.5 text-sm font-semibold text-bg"
       >
         Yeni bağlantı gönder
       </Link>

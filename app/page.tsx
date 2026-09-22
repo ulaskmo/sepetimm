@@ -1,203 +1,272 @@
 import Link from "next/link";
 import { HeroVideo } from "@/components/hero-video";
-import { ScrollAssembly } from "@/components/scroll-assembly";
+import { WeaveIn } from "@/components/weave-in";
 import { ProductCard } from "@/components/product-card";
-import { Reveal, Stagger, StaggerItem, WeaveDivider } from "@/components/motion-primitives";
 import { featuredProducts, listCourses } from "@/lib/queries";
-import { BRAND } from "@/lib/brand";
+import { BRAND, formatTRY } from "@/lib/brand";
 
-const STEPS = [
-  {
-    n: "01",
-    title: "Kağıt toplanır",
-    body: "Gazete ve dergi sayfaları ayrılır, ince şeritler halinde kesilir. Çöpe gidecek kağıt, hammaddeye dönüşür.",
-  },
-  {
-    n: "02",
-    title: "Çubuk sarılır",
-    body: "Her şerit şişle tek tek sarılarak çubuk haline getirilir. Bir sepet için yüzlerce çubuk gerekir.",
-  },
-  {
-    n: "03",
-    title: "Boyanır ve kurutulur",
-    body: "Çubuklar su bazlı boyayla renklendirilir, doğal hasır tonunu almaları için kurumaya bırakılır.",
-  },
-  {
-    n: "04",
-    title: "Elde örülür",
-    body: "Tabandan başlayıp kenar kapatmaya kadar tamamı elde örülür. Astar ve dantel en son dikilir.",
-  },
+const FACTS = [
+  ["Atölye", BRAND.city],
+  ["Üretim", "Tamamı el işi"],
+  ["Malzeme", "Geri dönüşümlü kağıt"],
+  ["Adet", "Tek parça / siparişe özel"],
 ];
 
-const RESERVATION_STEPS = [
-  { title: "Talep gönderirsiniz", body: "Beğendiğiniz sepet için formu doldurursunuz. Kart bilgisi istenmez." },
-  { title: "Eda değerlendirir", body: "Talep anında Eda'ya ulaşır. Sepetin müsaitliğine göre onaylar ya da reddeder." },
-  { title: "Onaylanırsa ödersiniz", body: "Sadece onay çıkarsa size ödeme bağlantısı e-postayla gelir. Reddedilirse hiçbir ücret alınmaz." },
+const STEPS = [
+  ["01", "Kağıt toplanır", "Gazete ve dergi sayfaları ayrılır, ince şeritler halinde kesilir."],
+  ["02", "Çubuk sarılır", "Her şerit şişle tek tek sarılır. Bir sepet yüzlerce çubuk ister."],
+  ["03", "Boyanır", "Su bazlı boyayla renklendirilir, doğal tonunu alması için kurutulur."],
+  ["04", "Örülür", "Tabandan kenar kapatmaya kadar elde. Astar ve dantel en son dikilir."],
+];
+
+const RESERVATION = [
+  ["Talep", "Beğendiğiniz ürün için formu doldurursunuz. Kart bilgisi istenmez."],
+  ["Değerlendirme", "Talep anında Eda'ya ulaşır; müsaitliğe göre onaylar ya da reddeder."],
+  ["Ödeme", "Yalnızca onay çıkarsa ödeme bağlantısı e-postayla gelir."],
 ];
 
 export default async function HomePage() {
-  const [products, courses] = await Promise.all([featuredProducts(3), listCourses()]);
+  const [products, courses] = await Promise.all([featuredProducts(4), listCourses()]);
 
   return (
     <>
-      {/* Sayfaya girince kendini ören, tam genişlikte kahraman bölümü */}
-      <ScrollAssembly src="/urunler/sepet-hero.jpg" />
+      {/* Hero */}
+      <section className="border-b border-hair">
+        <div className="mx-auto grid max-w-[1400px] items-center gap-10 px-5 py-12 lg:grid-cols-2 lg:gap-16 lg:px-10 lg:py-16">
+          <div className="flex flex-col justify-center">
+            <p className="text-[11px] uppercase tracking-[0.26em] text-bark-soft">
+              {BRAND.city} · El örgüsü
+            </p>
 
-      {/* Süreç */}
-      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 md:py-28">
-        <Reveal>
-          <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Kağıt sepetler nasıl yapılıyor</p>
-          <h2 className="mt-4 max-w-2xl font-display text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-tight">
-            Bir gazete sayfasından sepete giden yol
-          </h2>
-        </Reveal>
+            <h1 className="mt-6 font-display text-[clamp(2.6rem,5.6vw,4.6rem)] font-semibold leading-[0.98] tracking-[-0.02em]">
+              Bir sepet,
+              <br />
+              yüzlerce
+              <br />
+              kağıt çubuk.
+            </h1>
 
-        <WeaveDivider className="my-12" />
+            <p className="mt-7 max-w-sm text-[15px] leading-relaxed text-bark-soft">
+              Eda her parçayı {BRAND.city}&apos;da tek başına örüyor. Stok yok, kalıp yok —
+              bu yüzden önce talep alıyoruz, onay çıkmadan kimseden ödeme almıyoruz.
+            </p>
 
-        <Stagger className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((step) => (
-            <StaggerItem key={step.n}>
-              <p className="font-display text-3xl font-semibold text-rattan">{step.n}</p>
-              <h3 className="mt-3 font-display text-lg font-semibold">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-bark-soft">{step.body}</p>
-            </StaggerItem>
-          ))}
-        </Stagger>
+            <div className="mt-9 flex flex-wrap items-center gap-6">
+              <Link
+                href="/urunler"
+                className="rounded-sm bg-bark px-7 py-3.5 text-[13px] font-medium tracking-wide text-bg transition-opacity hover:opacity-85"
+              >
+                Ürünleri gör
+              </Link>
+              <Link
+                href="/ozel-siparis"
+                className="border-b border-bark/30 pb-0.5 text-[13px] tracking-wide transition-colors hover:border-bark"
+              >
+                Özel sipariş ver
+              </Link>
+            </div>
+          </div>
 
-        <Reveal className="mt-14">
-          <HeroVideo
-            src="/video/orgu-detay.mp4"
-            poster="/video/orgu-detay-poster.jpg"
-            label="Ellerin kağıt şeritleri örerek sepet dokusu oluşturması"
-            className="aspect-video w-full rounded-[1.75rem] shadow-[var(--shadow)]"
-          />
-        </Reveal>
+          <div>
+            <WeaveIn
+              src="/urunler/cicekli-canta-1.jpg"
+              alt="Çiçek işlemeli el örgüsü çanta"
+              className="aspect-4/5 w-full lg:aspect-3/4"
+            />
+          </div>
+        </div>
       </section>
 
-      {/* Öne çıkan sepetler */}
-      <section className="bg-sand/45 weave-texture py-20 md:py-28">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <Reveal className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Koleksiyon</p>
-              <h2 className="mt-4 font-display text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-tight">
-                Şu an müsait olanlar
-              </h2>
+      {/* Künye şeridi */}
+      <section className="border-b border-hair">
+        <dl className="mx-auto grid max-w-[1400px] grid-cols-2 lg:grid-cols-4">
+          {FACTS.map(([label, value], i) => (
+            <div
+              key={label}
+              className={`px-5 py-6 lg:px-10 ${
+                i % 2 === 1 ? "border-l border-hair" : ""
+              } ${i > 1 ? "border-t border-hair lg:border-t-0" : ""} ${
+                i === 2 ? "lg:border-l" : ""
+              } lg:border-l lg:first:border-l-0`}
+            >
+              <dt className="text-[10px] uppercase tracking-[0.24em] text-bark-soft">{label}</dt>
+              <dd className="mt-2 text-[14px]">{value}</dd>
             </div>
+          ))}
+        </dl>
+      </section>
+
+      {/* Ürünler */}
+      <section className="border-b border-hair">
+        <div className="mx-auto max-w-[1400px] px-5 py-14 lg:px-10 lg:py-20">
+          <div className="flex items-end justify-between gap-6 border-b border-hair pb-6">
+            <h2 className="font-display text-[clamp(1.6rem,3vw,2.4rem)] font-semibold tracking-[-0.01em]">
+              Şu an müsait
+            </h2>
             <Link
               href="/urunler"
-              className="group inline-flex items-center gap-2 text-sm font-semibold text-rattan-deep"
+              className="shrink-0 border-b border-bark/30 pb-0.5 text-[13px] tracking-wide transition-colors hover:border-bark"
             >
-              Hepsini gör
-              <span className="transition-transform group-hover:translate-x-1">→</span>
+              Tümü
             </Link>
-          </Reveal>
-
-          <Reveal className="mt-10">
-            <HeroVideo
-              src="/video/annem-sepet.mp4"
-              poster="/video/annem-sepet-poster.jpg"
-              label="Çiçek işlemeli el örgüsü çanta, her açıdan"
-              className="aspect-video w-full rounded-[1.75rem] shadow-[var(--shadow)]"
-            />
-          </Reveal>
+          </div>
 
           {products.length > 0 ? (
-            <Stagger className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
               {products.map((p, i) => (
-                <StaggerItem key={p.id}>
-                  <ProductCard product={p} priority={i === 0} />
-                </StaggerItem>
+                <div key={p.id}>
+                  <ProductCard product={p} priority={i < 2} />
+                </div>
               ))}
-            </Stagger>
+            </div>
           ) : (
-            <Reveal className="mt-12 rounded-3xl border border-dashed border-line bg-raised/60 p-10 text-center">
-              <p className="text-bark-soft">
-                Koleksiyon hazırlanıyor. Yeni sepetler için{" "}
-                <a className="font-semibold text-rattan-deep" href={BRAND.instagram}>
+            <div className="mt-10 border border-dashed border-hair px-6 py-16 text-center">
+              <p className="text-[15px] text-bark-soft">
+                Koleksiyon hazırlanıyor.{" "}
+                <a className="border-b border-bark/30 pb-0.5" href={BRAND.instagram}>
                   @{BRAND.handle}
                 </a>{" "}
-                hesabını takip edin.
+                hesabından takip edebilirsiniz.
               </p>
-            </Reveal>
+            </div>
           )}
         </div>
       </section>
 
-      {/* Rezervasyon nasıl işler */}
-      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 md:py-28">
-        <Reveal className="max-w-2xl">
-          <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Rezervasyon</p>
-          <h2 className="mt-4 font-display text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-tight">
-            Önce onay, sonra ödeme
-          </h2>
-          <p className="mt-5 text-base leading-relaxed text-bark-soft">
-            Sepetler tek tek üretildiği için doğrudan satın alma yok. Önce talebinizi
-            iletirsiniz — kartınızdan hiçbir şey çekilmez.
-          </p>
-        </Reveal>
+      {/* Video */}
+      <section className="border-b border-hair">
+        <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-14 lg:grid-cols-12 lg:px-10 lg:py-20">
+          <div className="lg:col-span-4">
+            <p className="text-[11px] uppercase tracking-[0.26em] text-bark-soft">Her açıdan</p>
+            <h2 className="mt-5 font-display text-[clamp(1.6rem,3vw,2.4rem)] font-semibold leading-tight tracking-[-0.01em]">
+              Fotoğrafın göstermediği
+              <br />
+              detaylar
+            </h2>
+            <p className="mt-5 max-w-xs text-[15px] leading-relaxed text-bark-soft">
+              File örgü gövde, elde işlenmiş çiçekler, kumaş astar ve metal ayaklı
+              hakiki deri taban.
+            </p>
+          </div>
+          <div className="lg:col-span-8">
+            <HeroVideo
+              src="/video/annem-sepet.mp4"
+              poster="/video/annem-sepet-poster.jpg"
+              label="Çiçek işlemeli el örgüsü çanta, dönen platformda"
+              className="aspect-video w-full"
+            />
+          </div>
+        </div>
+      </section>
 
-        <Stagger className="mt-14 grid gap-6 md:grid-cols-3">
-          {RESERVATION_STEPS.map((s, i) => (
-            <StaggerItem key={s.title}>
-              <div className="h-full rounded-3xl border border-line bg-raised p-7">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-sand font-display text-sm font-semibold">
-                  {i + 1}
-                </span>
-                <h3 className="mt-5 font-display text-lg font-semibold">{s.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-bark-soft">{s.body}</p>
+      {/* Süreç */}
+      <section className="border-b border-hair">
+        <div className="mx-auto max-w-[1400px] px-5 py-14 lg:px-10 lg:py-20">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.26em] text-bark-soft">Süreç</p>
+            <h2 className="mt-5 max-w-lg font-display text-[clamp(1.6rem,3vw,2.4rem)] font-semibold leading-tight tracking-[-0.01em]">
+              Gazete sayfasından sepete
+            </h2>
+          </div>
+
+          <div className="mt-12 border-t border-hair">
+            {STEPS.map(([n, title, body]) => (
+              <div key={n}>
+                <div className="grid grid-cols-12 gap-4 border-b border-hair py-6">
+                  <span className="col-span-2 font-display text-[13px] text-rattan-deep lg:col-span-1">
+                    {n}
+                  </span>
+                  <h3 className="col-span-10 text-[15px] font-medium lg:col-span-3">{title}</h3>
+                  <p className="col-start-3 col-end-13 text-[14px] leading-relaxed text-bark-soft lg:col-span-8 lg:col-start-5">
+                    {body}
+                  </p>
+                </div>
               </div>
-            </StaggerItem>
-          ))}
-        </Stagger>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Rezervasyon */}
+      <section className="border-b border-hair">
+        <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-14 lg:grid-cols-12 lg:px-10 lg:py-20">
+          <div className="lg:col-span-5">
+            <p className="text-[11px] uppercase tracking-[0.26em] text-bark-soft">Nasıl alınır</p>
+            <h2 className="mt-5 font-display text-[clamp(1.6rem,3vw,2.4rem)] font-semibold leading-tight tracking-[-0.01em]">
+              Önce onay,
+              <br />
+              sonra ödeme
+            </h2>
+            <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-bark-soft">
+              Her parça tek tek üretildiği için doğrudan satın alma yok. Talebiniz
+              onaylanmazsa kartınızdan hiçbir şey çekilmez.
+            </p>
+          </div>
+
+          <div className="lg:col-span-6 lg:col-start-7">
+            <div className="border-t border-hair">
+              {RESERVATION.map(([title, body], i) => (
+                <div key={title}>
+                  <div className="flex gap-6 border-b border-hair py-5">
+                    <span className="font-display text-[13px] text-rattan-deep">
+                      0{i + 1}
+                    </span>
+                    <div>
+                      <h3 className="text-[15px] font-medium">{title}</h3>
+                      <p className="mt-1.5 text-[14px] leading-relaxed text-bark-soft">{body}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Kurslar */}
-      <section className="bg-bark py-20 text-bg md:py-28">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 md:grid-cols-2">
-          <Reveal>
-            <p className="text-xs uppercase tracking-[0.2em] text-bg/55">Video kurslar</p>
-            <h2 className="mt-4 font-display text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-tight">
+      <section className="bg-bark text-bg">
+        <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-16 lg:grid-cols-12 lg:px-10 lg:py-24">
+          <div className="lg:col-span-5">
+            <p className="text-[11px] uppercase tracking-[0.26em] text-bg/50">Video kurslar</p>
+            <h2 className="mt-5 font-display text-[clamp(1.6rem,3vw,2.4rem)] font-semibold leading-tight tracking-[-0.01em]">
               Kendi sepetinizi örün
             </h2>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-bg/70">
-              5-10 dakikalık, adım adım anlatan kısa videolar. Çubuk sarmaktan kenar
-              kapatmaya kadar her tekniği kendi hızınızda öğrenin. Satın aldığınız
-              kurslar hesabınızda sınırsız süre kalır.
+            <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-bg/65">
+              5-10 dakikalık, tek bir tekniği baştan sona gösteren dersler. Satın aldığınız
+              kurslar hesabınızda süresiz kalır.
             </p>
             <Link
               href="/kurslar"
-              className="group mt-9 inline-flex items-center gap-2 rounded-full bg-bg px-7 py-3.5 text-sm font-semibold text-bark transition-transform hover:-translate-y-0.5"
+              className="mt-9 inline-block rounded-sm bg-bg px-7 py-3.5 text-[13px] font-medium tracking-wide text-bark transition-opacity hover:opacity-85"
             >
               Kurslara bak
-              <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
-          </Reveal>
+          </div>
 
-          <Reveal delay={0.15}>
-            <ul className="space-y-3">
+          <div className="lg:col-span-6 lg:col-start-7">
+            <ul className="border-t border-bg/15">
               {(courses.length > 0
-                ? courses.slice(0, 4).map((c) => c.title)
-                : [
-                    "Kağıt çubuk sarma tekniği",
-                    "Sepet tabanı örme",
-                    "Düz örgü ve zikzak desen",
-                    "Kenar kapatma ve astar dikimi",
-                  ]
-              ).map((title, i) => (
+                ? courses.slice(0, 4).map((c) => [c.title, formatTRY(c.price_kurus)] as const)
+                : ([
+                    ["Kağıt çubuk sarma tekniği", "—"],
+                    ["Sepet tabanı örme", "—"],
+                    ["Düz örgü ve zikzak desen", "—"],
+                    ["Kenar kapatma ve astar dikimi", "—"],
+                  ] as const)
+              ).map(([title, price], i) => (
                 <li
                   key={title}
-                  className="flex items-center gap-4 rounded-2xl border border-bg/12 bg-bg/6 px-5 py-4"
+                  className="flex items-baseline gap-5 border-b border-bg/15 py-4 text-[15px]"
                 >
-                  <span className="font-display text-sm text-bg/45">
+                  <span className="font-display text-[12px] text-bg/40">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-sm font-medium">{title}</span>
-                  <span className="ml-auto text-xs text-bg/45">5-10 dk</span>
+                  <span className="flex-1">{title}</span>
+                  <span className="text-[13px] text-bg/55">{price}</span>
                 </li>
               ))}
             </ul>
-          </Reveal>
+          </div>
         </div>
       </section>
     </>

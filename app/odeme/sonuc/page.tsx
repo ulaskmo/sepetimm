@@ -14,7 +14,7 @@ export default async function PaymentResultPage({ searchParams }: PageProps<"/od
           ok ? "bg-sage/20" : "bg-red-500/10"
         }`}
       >
-        {ok ? "✓" : "!"}
+        {ok ? "OK" : "!"}
       </span>
 
       <h1 className="mt-7 font-display text-3xl font-semibold">
@@ -29,7 +29,7 @@ export default async function PaymentResultPage({ searchParams }: PageProps<"/od
 
       <Link
         href={ok ? "/urunler" : "/"}
-        className="mt-9 inline-flex rounded-full bg-bark px-7 py-3.5 text-sm font-semibold text-bg"
+        className="mt-9 inline-flex rounded-sm bg-bark px-7 py-3.5 text-sm font-semibold text-bg"
       >
         {ok ? "Diğer sepetlere bak" : "Ana sayfaya dön"}
       </Link>

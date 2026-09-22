@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion-primitives";
 import { listCourses } from "@/lib/queries";
 import { formatTRY } from "@/lib/brand";
 
@@ -22,7 +21,7 @@ export default async function CoursesPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
-      <Reveal>
+      <div>
         <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Video kurslar</p>
         <h1 className="mt-4 max-w-2xl font-display text-[clamp(2rem,5vw,3.4rem)] font-semibold leading-[1.05]">
           Kendi sepetinizi örmeyi öğrenin
@@ -31,15 +30,15 @@ export default async function CoursesPage() {
           Her kurs 5-10 dakikalık, tek bir tekniği baştan sona gösteren kısa bir video.
           Satın aldığınız kurslar hesabınızda süresiz kalır, istediğiniz kadar izlersiniz.
         </p>
-      </Reveal>
+      </div>
 
       {courses.length > 0 ? (
-        <Stagger className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {courses.map((c) => (
-            <StaggerItem key={c.id}>
+            <div key={c.id}>
               <Link
                 href={`/kurslar/${c.slug}`}
-                className="group flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-raised transition-transform hover:-translate-y-2"
+                className="group flex h-full flex-col overflow-hidden rounded-none border border-hair bg-raised transition-transform hover:-translate-y-2"
               >
                 <div className="relative aspect-video overflow-hidden bg-sand">
                   {c.cover_image ? (
@@ -53,7 +52,7 @@ export default async function CoursesPage() {
                   ) : (
                     <div className="grid h-full place-items-center text-4xl opacity-40">▶</div>
                   )}
-                  <span className="absolute bottom-3 right-3 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
+                  <span className="absolute bottom-3 right-3 rounded-sm bg-black/55 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
                     {c.duration_sec ? `${Math.round(c.duration_sec / 60)} dk` : "5-10 dk"}
                   </span>
                 </div>
@@ -69,16 +68,16 @@ export default async function CoursesPage() {
                   <p className="mt-5 text-base font-semibold">{formatTRY(c.price_kurus)}</p>
                 </div>
               </Link>
-            </StaggerItem>
+            </div>
           ))}
-        </Stagger>
+        </div>
       ) : (
-        <Reveal className="mt-14 rounded-3xl border border-dashed border-line bg-raised/60 p-12 text-center">
+        <div className="mt-14 rounded-none border border-dashed border-hair bg-raised/60 p-12 text-center">
           <p className="font-display text-xl font-semibold">Kurslar hazırlanıyor</p>
           <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-bark-soft">
             İlk video kurslar çok yakında burada olacak.
           </p>
-        </Reveal>
+        </div>
       )}
     </div>
   );

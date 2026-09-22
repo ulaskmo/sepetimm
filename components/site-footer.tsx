@@ -1,34 +1,62 @@
 import Link from "next/link";
 import { BRAND } from "@/lib/brand";
 
+const COLUMNS = [
+  {
+    title: "Mağaza",
+    links: [
+      ["Ürünler", "/urunler"],
+      ["Özel sipariş", "/ozel-siparis"],
+      ["Video kurslar", "/kurslar"],
+    ],
+  },
+  {
+    title: "Hakkında",
+    links: [
+      ["Hikaye", "/hikaye"],
+      ["Hesabım", "/hesabim"],
+    ],
+  },
+];
+
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-line bg-sand/40 weave-texture">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
-        <div>
-          <p className="font-display text-xl font-semibold">{BRAND.name}</p>
-          <p className="mt-3 max-w-xs text-sm leading-relaxed text-bark-soft">
-            {BRAND.tagline}. Her sepet {BRAND.city}&apos;da, tek tek elde örülür.
+    <footer className="border-t border-hair">
+      <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-14 lg:grid-cols-12 lg:px-10">
+        <div className="lg:col-span-5">
+          <p className="font-display text-[1.35rem] font-semibold tracking-tight">{BRAND.name}</p>
+          <p className="mt-3 max-w-xs text-[14px] leading-relaxed text-bark-soft">
+            {BRAND.tagline}. Her parça {BRAND.city}&apos;da, {BRAND.maker} tarafından
+            tek tek örülür.
           </p>
         </div>
 
-        <nav aria-label="Alt menü">
-          <p className="text-xs uppercase tracking-[0.18em] text-bark-soft">Keşfet</p>
-          <ul className="mt-4 space-y-2 text-sm">
-            <li><Link className="hover:text-rattan-deep" href="/urunler">Sepetler</Link></li>
-            <li><Link className="hover:text-rattan-deep" href="/ozel-siparis">Özel sipariş</Link></li>
-            <li><Link className="hover:text-rattan-deep" href="/kurslar">Video kurslar</Link></li>
-            <li><Link className="hover:text-rattan-deep" href="/hikaye">Hikayemiz</Link></li>
-            <li><Link className="hover:text-rattan-deep" href="/hesabim">Hesabım</Link></li>
-          </ul>
-        </nav>
+        {COLUMNS.map((col) => (
+          <nav key={col.title} className="lg:col-span-2" aria-label={col.title}>
+            <p className="text-[10px] uppercase tracking-[0.24em] text-bark-soft">{col.title}</p>
+            <ul className="mt-4 space-y-2.5">
+              {col.links.map(([label, href]) => (
+                <li key={href}>
+                  <Link className="text-[14px] text-bark-soft transition-colors hover:text-bark" href={href}>
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
 
-        <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-bark-soft">İletişim</p>
-          <ul className="mt-4 space-y-2 text-sm">
+        <div className="lg:col-span-3">
+          <p className="text-[10px] uppercase tracking-[0.24em] text-bark-soft">İletişim</p>
+          <ul className="mt-4 space-y-2.5 text-[14px]">
             <li>
-              <a className="hover:text-rattan-deep" href={BRAND.instagram} target="_blank" rel="noopener noreferrer">
-                Instagram · @{BRAND.handle}
+              <a
+                className="text-bark-soft transition-colors hover:text-bark"
+                href={BRAND.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                @{BRAND.handle}
               </a>
             </li>
             <li className="text-bark-soft">{BRAND.city}, Türkiye</li>
@@ -36,8 +64,11 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-line px-4 py-6 text-center text-xs text-bark-soft sm:px-6">
-        © {new Date().getFullYear()} {BRAND.name}. Tüm hakları saklıdır.
+      <div className="border-t border-hair">
+        <div className="mx-auto flex max-w-[1400px] flex-wrap justify-between gap-2 px-5 py-5 text-[12px] text-bark-soft lg:px-10">
+          <span>© {new Date().getFullYear()} {BRAND.name}</span>
+          <span>{BRAND.city}</span>
+        </div>
       </div>
     </footer>
   );

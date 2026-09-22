@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
 const field =
-  "w-full rounded-2xl border border-line bg-bg px-4 py-3 text-sm outline-none transition-colors placeholder:text-bark-soft/55 focus:border-rattan";
+  "w-full rounded-sm border border-hair bg-bg px-4 py-3 text-sm outline-none transition-colors placeholder:text-bark-soft/55 focus:border-rattan";
 
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
 
@@ -64,15 +64,15 @@ export function CustomOrderForm() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="rounded-3xl border border-line bg-raised p-10 text-center shadow-[var(--shadow)]"
+          className="rounded-none border border-hair bg-raised p-10 text-center shadow-[var(--shadow)]"
         >
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
-            className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-sage/20 text-2xl"
+            className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-sage/20 text-sage"
           >
-            ✓
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none"><path d="M2 8.5 6 12.5 14 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </motion.span>
           <p className="mt-5 font-display text-xl font-semibold">Talebiniz Eda&apos;ya iletildi</p>
           <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-bark-soft">
@@ -87,7 +87,7 @@ export function CustomOrderForm() {
           onSubmit={onSubmit}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="space-y-8 rounded-3xl border border-line bg-raised p-7 shadow-[var(--shadow)] sm:p-9"
+          className="space-y-8 rounded-none border border-hair bg-raised p-7 shadow-[var(--shadow)] sm:p-9"
         >
           {/* 1 — örnek görsel */}
           <fieldset className="space-y-3">
@@ -108,12 +108,12 @@ export function CustomOrderForm() {
             />
 
             {preview ? (
-              <div className="flex items-center gap-4 rounded-2xl border border-line bg-bg p-3">
+              <div className="flex items-center gap-4 rounded-sm border border-hair bg-bg p-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={preview}
                   alt="Yüklediğiniz görselin önizlemesi"
-                  className="h-20 w-20 rounded-xl object-cover"
+                  className="h-20 w-20 rounded-sm object-cover"
                 />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{fileName}</p>
@@ -134,10 +134,11 @@ export function CustomOrderForm() {
             ) : (
               <label
                 htmlFor="ozel-foto"
-                className="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed border-line bg-bg px-6 py-10 text-center transition-colors hover:border-rattan hover:bg-sand/40"
+                className="flex cursor-pointer flex-col items-center gap-2 rounded-sm border border-dashed border-hair bg-bg px-6 py-10 text-center transition-colors hover:border-rattan hover:bg-sand/40"
               >
-                <span className="text-2xl">🖼</span>
-                <span className="text-sm font-medium">Fotoğraf seç</span>
+                <span className="text-[13px] font-medium underline underline-offset-4">
+                  Fotoğraf seç
+                </span>
                 <span className="text-xs text-bark-soft">JPG veya PNG, en fazla 8 MB</span>
               </label>
             )}
@@ -207,7 +208,7 @@ export function CustomOrderForm() {
           </fieldset>
 
           {error && (
-            <p role="alert" className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
+            <p role="alert" className="rounded-sm bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
               {error}
             </p>
           )}
@@ -216,7 +217,7 @@ export function CustomOrderForm() {
             <button
               type="submit"
               disabled={state === "sending"}
-              className="w-full rounded-full bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
+              className="w-full rounded-sm bg-bark px-6 py-4 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
             >
               {state === "sending" ? "Gönderiliyor…" : "Talebi gönder"}
             </button>
