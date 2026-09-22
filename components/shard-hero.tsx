@@ -17,19 +17,31 @@ import { BRAND } from "@/lib/brand";
  * photo hero instead.
  */
 
-let webglCache: boolean | null = null;
+let glCache: boolean | null = null;
 
-function detectWebGL(): boolean {
-  if (webglCache !== null) return webglCache;
+/**
+ * Deliberately narrow. Most visitors arrive on a phone, and transmissive glass
+ * is the most expensive thing you can put on a mid-range Android — before you
+ * count the ~570KB of three.js over mobile data. The WebGL hero is a desktop
+ * enhancement; phones get the reactive photo hero, which is a few KB.
+ */
+function detectGL(): boolean {
+  if (glCache !== null) return glCache;
   try {
+    const bigEnough = window.matchMedia("(min-width: 1024px)").matches;
+    const realPointer = window.matchMedia("(pointer: fine)").matches;
+    const cores = navigator.hardwareConcurrency || 2;
+    const phone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (!bigEnough || !realPointer || phone || cores <= 4) {
+      glCache = false;
+      return glCache;
+    }
     const c = document.createElement("canvas");
-    webglCache = Boolean(
-      window.WebGL2RenderingContext && (c.getContext("webgl2") || c.getContext("webgl"))
-    );
+    glCache = Boolean(window.WebGL2RenderingContext && c.getContext("webgl2"));
   } catch {
-    webglCache = false;
+    glCache = false;
   }
-  return webglCache;
+  return glCache;
 }
 
 /**
@@ -40,7 +52,7 @@ function detectWebGL(): boolean {
 function useWebGL(): boolean {
   return useSyncExternalStore(
     () => () => {},
-    detectWebGL,
+    detectGL,
     () => false
   );
 }

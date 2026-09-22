@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { animate, motion, useMotionValue, useTransform, type MotionValue } from "motion/react";
 import { usePrefersReducedMotion } from "./use-reduced-motion";
+import { useTilt } from "./use-tilt";
 
 /**
  * Fills its container with a photograph that weaves itself together on arrival:
@@ -22,7 +23,17 @@ function jitter(i: number, salt: number): number {
   return Math.abs((Math.sin((i + 1) * 12.9898 + salt * 78.233) * 43758.5453) % 1);
 }
 
-function Band({ index, src, progress }: { index: number; src: string; progress: MotionValue<number> }) {
+function Band({
+  index,
+  src,
+  progress,
+  tiltX,
+}: {
+  index: number;
+  src: string;
+  progress: MotionValue<number>;
+  tiltX: MotionValue<number>;
+}) {
   const fromBottom = STRIPS - 1 - index;
   const start = (fromBottom / STRIPS) * 0.7;
   const end = start + 0.3;
@@ -31,7 +42,14 @@ function Band({ index, src, progress }: { index: number; src: string; progress: 
   const distance = 55 + jitter(index, 1) * 70; // percent of container width
   const tilt = dir * (2 + jitter(index, 2) * 4);
 
-  const x = useTransform(progress, [start, end], [`${dir * distance}%`, "0%"], { clamp: true });
+  const enter = useTransform(progress, [start, end], [dir * distance, 0], { clamp: true });
+
+  // Bands further from the middle shear further, so dragging a finger across
+  // the photo bends it like a woven panel catching the light. A few pixels is
+  // enough — more and the rows stop lining up and it just looks broken.
+  const depth = (index / (STRIPS - 1) - 0.5) * 2;
+  const shear = useTransform(tiltX, (t) => t * depth * 7);
+  const x = useTransform([enter, shear], ([e, sh]: number[]) => `calc(${e}% + ${sh}px)`);
   const rotate = useTransform(progress, [start, end], [tilt, 0], { clamp: true });
   const opacity = useTransform(progress, [start, start + 0.12, end], [0, 0.9, 1], { clamp: true });
 
@@ -82,6 +100,11 @@ export function WeaveIn({
   const hydrated = useHydrated();
   const calm = usePrefersReducedMotion();
   const progress = useMotionValue(0);
+  const hostRef = useRef<HTMLDivElement>(null);
+  const { tiltX, tiltY } = useTilt(hostRef, hydrated && !calm);
+
+  const rotateY = useTransform(tiltX, (t) => t * 5);
+  const rotateX = useTransform(tiltY, (t) => t * -3.5);
 
   useEffect(() => {
     if (calm) {
@@ -111,10 +134,21 @@ export function WeaveIn({
   }
 
   return (
-    <div role="img" aria-label={alt} className={`relative overflow-hidden bg-sand ${className}`}>
-      {Array.from({ length: STRIPS }, (_, i) => (
-        <Band key={i} index={i} src={src} progress={progress} />
-      ))}
+    <div
+      ref={hostRef}
+      role="img"
+      aria-label={alt}
+      className={`relative ${className}`}
+      style={{ perspective: 900 }}
+    >
+      <motion.div
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        className="relative h-full w-full overflow-hidden bg-sand"
+      >
+        {Array.from({ length: STRIPS }, (_, i) => (
+          <Band key={i} index={i} src={src} progress={progress} tiltX={tiltX} />
+        ))}
+      </motion.div>
     </div>
   );
 }

@@ -9,7 +9,7 @@ const FACTS = [
   ["Atölye", BRAND.city],
   ["Üretim", "Tamamı el işi"],
   ["Malzeme", "Geri dönüşümlü kağıt"],
-  ["Adet", "Tek parça / siparişe özel"],
+  ["Adet", "Tek parça ya da siparişe özel"],
 ];
 
 const STEPS = [
@@ -48,7 +48,7 @@ export default async function HomePage() {
               } lg:border-l lg:first:border-l-0`}
             >
               <dt className="text-[10px] uppercase tracking-[0.24em] text-bark-soft">{label}</dt>
-              <dd className="mt-2 text-[14px]">{value}</dd>
+              <dd className="mt-2 text-balance text-[14px] leading-snug">{value}</dd>
             </div>
           ))}
         </dl>
