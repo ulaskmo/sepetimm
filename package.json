@@ -10,7 +10,8 @@
     "test": "node --import ./test/resolve-ts.mjs --test test/*.test.ts",
     "db:setup": "node scripts/db.mjs db/schema.sql",
     "db:seed": "node scripts/db.mjs db/seed.sql db/seed-urunler.sql",
-    "db:all": "node scripts/db.mjs db/schema.sql db/seed-urunler.sql"
+    "db:all": "node scripts/db.mjs db/schema.sql db/seed-urunler.sql",
+    "telegram": "node scripts/telegram.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1137.0",
