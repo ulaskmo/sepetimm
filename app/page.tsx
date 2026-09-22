@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { HeroVideo } from "@/components/hero-video";
-import { WeaveIn } from "@/components/weave-in";
+import { ShardHero } from "@/components/shard-hero";
 import { ProductCard } from "@/components/product-card";
 import { featuredProducts, listCourses } from "@/lib/queries";
 import { BRAND, formatTRY } from "@/lib/brand";
@@ -30,52 +30,10 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="border-b border-hair">
-        <div className="mx-auto grid max-w-[1400px] items-center gap-10 px-5 py-12 lg:grid-cols-2 lg:gap-16 lg:px-10 lg:py-16">
-          <div className="flex flex-col justify-center">
-            <p className="text-[11px] uppercase tracking-[0.26em] text-bark-soft">
-              {BRAND.city} · El örgüsü
-            </p>
-
-            <h1 className="mt-6 font-display text-[clamp(2.6rem,5.6vw,4.6rem)] font-semibold leading-[0.98] tracking-[-0.02em]">
-              Bir sepet,
-              <br />
-              yüzlerce
-              <br />
-              kağıt çubuk.
-            </h1>
-
-            <p className="mt-7 max-w-sm text-[15px] leading-relaxed text-bark-soft">
-              Eda her parçayı {BRAND.city}&apos;da tek başına örüyor. Stok yok, kalıp yok —
-              bu yüzden önce talep alıyoruz, onay çıkmadan kimseden ödeme almıyoruz.
-            </p>
-
-            <div className="mt-9 flex flex-wrap items-center gap-6">
-              <Link
-                href="/urunler"
-                className="rounded-sm bg-bark px-7 py-3.5 text-[13px] font-medium tracking-wide text-bg transition-opacity hover:opacity-85"
-              >
-                Ürünleri gör
-              </Link>
-              <Link
-                href="/ozel-siparis"
-                className="border-b border-bark/30 pb-0.5 text-[13px] tracking-wide transition-colors hover:border-bark"
-              >
-                Özel sipariş ver
-              </Link>
-            </div>
-          </div>
-
-          <div>
-            <WeaveIn
-              src="/urunler/cicekli-canta-1.jpg"
-              alt="Çiçek işlemeli el örgüsü çanta"
-              className="aspect-4/5 w-full lg:aspect-3/4"
-            />
-          </div>
-        </div>
-      </section>
+      <ShardHero
+        fallbackSrc="/urunler/cicekli-canta-1.jpg"
+        fallbackAlt="Çiçek işlemeli el örgüsü çanta"
+      />
 
       {/* Künye şeridi */}
       <section className="border-b border-hair">
