@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "./use-reduced-motion";
 
 /**
  * Autoplaying background video.
@@ -23,38 +24,39 @@ export function HeroVideo({
   className?: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
-  const [playing, setPlaying] = useState(true);
+  const calm = usePrefersReducedMotion();
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     const video = ref.current;
     if (!video) return;
 
-    const calm = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (calm.matches) {
+    // State follows the element's own events, so the button never claims to be
+    // playing when autoplay was refused (low power mode, data saver).
+    const onPlay = () => setPlaying(true);
+    const onPause = () => setPlaying(false);
+    video.addEventListener("play", onPlay);
+    video.addEventListener("pause", onPause);
+
+    if (calm) {
       video.pause();
-      setPlaying(false);
-      return;
+    } else {
+      video.play().catch(() => {
+        /* autoplay refused — the pause button becomes a play button */
+      });
     }
-    // Autoplay can still be refused (low power mode, data saver) — reflect
-    // reality in the button rather than lying about it.
-    video.play().then(
-      () => setPlaying(true),
-      () => setPlaying(false)
-    );
-  }, []);
+
+    return () => {
+      video.removeEventListener("play", onPlay);
+      video.removeEventListener("pause", onPause);
+    };
+  }, [calm]);
 
   function toggle() {
     const video = ref.current;
     if (!video) return;
-    if (video.paused) {
-      video.play().then(
-        () => setPlaying(true),
-        () => setPlaying(false)
-      );
-    } else {
-      video.pause();
-      setPlaying(false);
-    }
+    if (video.paused) video.play().catch(() => {});
+    else video.pause();
   }
 
   return (
