@@ -1,6 +1,6 @@
 export const BRAND = {
   name: "Sepetim",
-  maker: "Eda",
+  maker: "Biz",
   handle: "eda.nintasarimlari",
   instagram: "https://instagram.com/eda.nintasarimlari",
   city: "Giresun",

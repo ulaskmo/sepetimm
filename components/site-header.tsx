@@ -23,9 +23,6 @@ export function SiteHeader() {
           <span className="font-display text-[1.35rem] font-semibold leading-none tracking-tight">
             {BRAND.name}
           </span>
-          <span className="hidden text-[10px] uppercase tracking-[0.26em] text-bark-soft sm:block">
-            {BRAND.city}
-          </span>
         </Link>
 
         <nav aria-label="Ana menü" className="hidden md:block">

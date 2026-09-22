@@ -26,8 +26,8 @@ export function SiteFooter() {
         <div className="lg:col-span-5">
           <p className="font-display text-[1.35rem] font-semibold tracking-tight">{BRAND.name}</p>
           <p className="mt-3 max-w-xs text-[14px] leading-relaxed text-bark-soft">
-            {BRAND.tagline}. Her parça {BRAND.city}&apos;da, {BRAND.maker} tarafından
-            tek tek örülür.
+            {BRAND.tagline}. Her parçayı {BRAND.city}&apos;da tek tek
+            elimizle örüyoruz.
           </p>
         </div>
 
