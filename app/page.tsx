@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { HeroVideo } from "@/components/hero-video";
 import { ScrollAssembly } from "@/components/scroll-assembly";
-import { WordsUp } from "@/components/motion-primitives";
 import { ProductCard } from "@/components/product-card";
 import { Reveal, Stagger, StaggerItem, WeaveDivider } from "@/components/motion-primitives";
 import { featuredProducts, listCourses } from "@/lib/queries";
@@ -41,31 +40,7 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Kısa giriş — asıl gösteri aşağıdaki kaydırmalı örgü bölümünde */}
-      <section className="mx-auto max-w-3xl px-4 pb-10 pt-16 text-center sm:px-6 md:pb-14 md:pt-24">
-        <p className="rise-in mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-raised/70 px-4 py-1.5 text-[11px] uppercase tracking-[0.18em] text-bark-soft">
-          <span className="h-1.5 w-1.5 rounded-full bg-sage" />
-          {BRAND.city}&apos;dan el emeği
-        </p>
-
-        <h1 className="font-display text-[clamp(2.2rem,6vw,3.8rem)] font-semibold leading-[1.05] tracking-tight">
-          <WordsUp text="Tek tek elde örülen" />
-          <br />
-          <span className="italic text-rattan-deep">
-            <WordsUp text="sepetler ve çantalar" />
-          </span>
-        </h1>
-
-        <p
-          style={{ animationDelay: "0.5s" }}
-          className="rise-in mx-auto mt-6 max-w-md text-base leading-relaxed text-bark-soft sm:text-lg"
-        >
-          Geri dönüşümlü kağıt çubuk, ip ve rafya — hepsi saatler süren bir sabırla,
-          elde örülür. Makine yok, kalıp yok; her parça elden çıkar.
-        </p>
-      </section>
-
-      {/* Kaydırdıkça sepet sıra sıra örülür */}
+      {/* Sayfaya girince kendini ören, tam genişlikte kahraman bölümü */}
       <ScrollAssembly src="/urunler/sepet-hero.jpg" />
 
       {/* Süreç */}

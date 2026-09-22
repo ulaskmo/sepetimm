@@ -1,56 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useSyncExternalStore } from "react";
-import { motion, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
+import { useEffect, useSyncExternalStore } from "react";
+import { animate, motion, useMotionValue, useTransform, type MotionValue } from "motion/react";
 import { usePrefersReducedMotion } from "./use-reduced-motion";
+import { BRAND } from "@/lib/brand";
 
 /**
- * Scroll-woven hero: the basket is cut into horizontal bands and the bands
- * slide in from alternating sides as the page is pulled down, so the product
- * is literally woven together row by row — which is how the real thing is made.
+ * Full-bleed hero that weaves itself together on arrival.
  *
- * The bands are slices of one photograph, so the finished result is the real
- * image at full fidelity rather than an illustration, and it stays sharp at any
- * width. Every value is driven by motion values, never React state: state here
- * would re-render all 26 bands on every scroll frame.
+ * The basket photograph is cut into horizontal bands which fly in from
+ * alternating sides and settle bottom-up, the way a real basket is woven.
+ * Bands are slices of the real image, so the finished frame is the photograph
+ * at full fidelity rather than an illustration.
+ *
+ * Everything is driven by one motion value, never React state: state here
+ * would re-render all 26 bands on every animation frame.
  */
 
 const STRIPS = 26;
 const ALT = "El örgüsü kağıt sepet — keten astarlı, dantel detaylı";
 
-const PHASES = [
-  { kicker: "Başlangıç", title: "Önce sadece kağıt", body: "Çöpe gidecek gazete sayfaları. Henüz hiçbir şey değiller." },
-  { kicker: "Çubuk", title: "Şeritler çubuğa dönüşür", body: "Her şerit şişle tek tek sarılır. Bir sepet için yüzlerce çubuk gerekir." },
-  { kicker: "Örgü", title: "Sıra sıra örülür", body: "Tabandan başlar, yukarı doğru yükselir. Makine yok — eller ve sabır." },
-  { kicker: "Tamamlandı", title: "Bir sepet doğar", body: "Astar dikilir, dantel eklenir, deri marka yerine oturur." },
-];
+/** Source image ratio, so the bands can behave like background-size: cover
+ *  without stretching the basket on tall or narrow viewports. */
+const IMG_W = 1600;
+const IMG_H = 895;
 
-/** Fade windows per phase: [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd] */
-const WINDOWS: [number, number, number, number][] = [
-  [0, 0, 0.24, 0.3],
-  [0.24, 0.3, 0.5, 0.56],
-  [0.5, 0.56, 0.8, 0.86],
-  [0.8, 0.86, 1.1, 1.2],
-];
+const DURATION = 2.7;
+
+const EDGE_FADE =
+  "linear-gradient(to bottom, transparent 0%, #000 26%), " +
+  "linear-gradient(to right, transparent 0%, #000 16%, #000 84%, transparent 100%)";
 
 /** Deterministic jitter — organic-looking scatter that never changes. */
 function jitter(i: number, salt: number): number {
   return Math.abs((Math.sin((i + 1) * 12.9898 + salt * 78.233) * 43758.5453) % 1);
 }
 
-/** Percentages are rounded: unrounded floats hydrate differently to how the
- *  browser serialises them, which React reports as a mismatch. */
-const pct = (n: number) => `${n.toFixed(4)}%`;
-
 function Strip({ index, src, progress }: { index: number; src: string; progress: MotionValue<number> }) {
-  // Bottom rows land first, exactly like weaving a real basket.
   const fromBottom = STRIPS - 1 - index;
   const start = (fromBottom / STRIPS) * 0.72;
   const end = start + 0.28;
 
   const dir = index % 2 === 0 ? -1 : 1;
-  const distance = 320 + jitter(index, 1) * 420;
+  const distance = 340 + jitter(index, 1) * 460;
   const tilt = dir * (4 + jitter(index, 2) * 7);
   const lift = (jitter(index, 3) - 0.5) * 90;
 
@@ -59,9 +52,17 @@ function Strip({ index, src, progress }: { index: number; src: string; progress:
   const rotate = useTransform(progress, [start, end], [tilt, 0], { clamp: true });
   const opacity = useTransform(progress, [start, start + 0.1, end], [0, 0.85, 1], { clamp: true });
   const filter = useTransform(
-    useTransform(progress, [start, end], [6, 0], { clamp: true }),
+    useTransform(progress, [start, end], [7, 0], { clamp: true }),
     (b) => `blur(${b.toFixed(2)}px)`
   );
+
+  // Every band is the same full-size layer showing the whole photo, clipped to
+  // its own row. Percentage heights rounded to fractional pixels and leaked
+  // hairline gaps between rows; identical boxes with overlapping clips cannot.
+  const band = 100 / STRIPS;
+  const overlap = 0.35;
+  const top = Math.max(0, index * band - overlap);
+  const bottom = Math.max(0, 100 - (index + 1) * band - overlap);
 
   return (
     <motion.div
@@ -72,29 +73,12 @@ function Strip({ index, src, progress }: { index: number; src: string; progress:
         rotate,
         opacity,
         filter,
-        height: pct(100 / STRIPS),
-        top: pct((index * 100) / STRIPS),
+        clipPath: `inset(${top.toFixed(4)}% 0% ${bottom.toFixed(4)}% 0%)`,
         backgroundImage: `url(${src})`,
-        backgroundSize: `100% ${STRIPS * 100}%`,
-        backgroundPosition: `0 ${pct((index / (STRIPS - 1)) * 100)}`,
+        backgroundSize: "100% 100%",
       }}
-      className="absolute inset-x-0 will-change-transform"
+      className="absolute inset-0 will-change-transform"
     />
-  );
-}
-
-function Caption({ index, progress }: { index: number; progress: MotionValue<number> }) {
-  const [inA, inB, outA, outB] = WINDOWS[index];
-  const opacity = useTransform(progress, [inA, inB, outA, outB], [0, 1, 1, 0], { clamp: true });
-  const y = useTransform(progress, [inA, inB], [10, 0], { clamp: true });
-  const phase = PHASES[index];
-
-  return (
-    <motion.div style={{ opacity, y }} className="absolute inset-x-0 top-0 text-center">
-      <p className="text-[10px] uppercase tracking-[0.22em] text-bark-soft">{phase.kicker}</p>
-      <p className="mt-1.5 font-display text-lg font-semibold sm:text-xl">{phase.title}</p>
-      <p className="mx-auto mt-1.5 max-w-sm text-sm leading-relaxed text-bark-soft">{phase.body}</p>
-    </motion.div>
   );
 }
 
@@ -112,13 +96,13 @@ function Actions({ className = "" }: { className?: string }) {
     <div className={`flex flex-wrap items-center justify-center gap-3 ${className}`}>
       <Link
         href="/urunler"
-        className="rounded-full bg-bark px-7 py-3.5 text-sm font-semibold text-bg transition-transform hover:-translate-y-0.5"
+        className="rounded-full bg-bark px-7 py-3.5 text-sm font-semibold text-bg shadow-lg transition-transform hover:-translate-y-0.5"
       >
         Ürünlere bak
       </Link>
       <Link
         href="/ozel-siparis"
-        className="rounded-full border border-line px-7 py-3.5 text-sm font-semibold transition-colors hover:bg-sand"
+        className="rounded-full border border-bark/25 bg-bg/70 px-7 py-3.5 text-sm font-semibold backdrop-blur-sm transition-colors hover:bg-bg"
       >
         Kendi sepetini tarif et
       </Link>
@@ -126,82 +110,118 @@ function Actions({ className = "" }: { className?: string }) {
   );
 }
 
+function Copy() {
+  return (
+    <>
+      <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-bark/15 bg-bg/70 px-4 py-1.5 text-[11px] uppercase tracking-[0.18em] text-bark-soft backdrop-blur-sm">
+        <span className="h-1.5 w-1.5 rounded-full bg-sage" />
+        {BRAND.city}&apos;dan el emeği
+      </p>
+      <h1 className="font-display text-[clamp(2.1rem,5.5vw,3.9rem)] font-semibold leading-[1.05] tracking-tight">
+        Tek tek elde örülen
+        <br />
+        <span className="italic text-rattan-deep">sepetler ve çantalar</span>
+      </h1>
+      <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-bark-soft">
+        Geri dönüşümlü kağıt çubuk, ip ve rafya — makine yok, kalıp yok.
+        Her parça elden çıkar.
+      </p>
+    </>
+  );
+}
+
 export function ScrollAssembly({ src }: { src: string }) {
-  const sectionRef = useRef<HTMLDivElement>(null);
   const hydrated = useHydrated();
   const calm = usePrefersReducedMotion();
+  const progress = useMotionValue(0);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
+  useEffect(() => {
+    if (calm) {
+      progress.set(1);
+      return;
+    }
+    // No "run once" guard here: StrictMode invokes effects twice, and a guard
+    // combined with the cleanup below would stop the first animation and skip
+    // the second, leaving the basket permanently in pieces.
+    progress.set(0);
+    const controls = animate(progress, 1, { duration: DURATION, ease: [0.22, 1, 0.36, 1] });
+    return () => controls.stop();
+  }, [calm, progress]);
 
-  // A light spring takes the stepiness out of wheel and trackpad scrolling.
-  const smooth = useSpring(scrollYProgress, { stiffness: 220, damping: 40, mass: 0.4 });
+  // The frame eases down as the weave completes, so it lands rather than stops.
+  const scale = useTransform(progress, [0, 1], [1.05, 1], { clamp: true });
+  const copyOpacity = useTransform(progress, [0.55, 0.95], [0, 1], { clamp: true });
+  const copyY = useTransform(progress, [0.55, 0.95], [18, 0], { clamp: true });
 
-  const shadowOpacity = useTransform(smooth, [0.55, 1], [0, 1], { clamp: true });
-  const hintOpacity = useTransform(smooth, [0, 0.1], [1, 0], { clamp: true });
-  const ctaOpacity = useTransform(smooth, [0.86, 0.99], [0, 1], { clamp: true });
-  const ctaY = useTransform(smooth, [0.86, 0.99], [18, 0], { clamp: true });
-  const barScale = useTransform(smooth, [0, 1], [0, 1], { clamp: true });
-
-  // Server render, no-JS and reduced-motion all get the finished basket.
-  if (!hydrated || calm) {
-    return (
-      <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={ALT} className="w-full rounded-[2rem] shadow-[var(--shadow)]" />
-        <Actions className="mt-8" />
-      </section>
-    );
-  }
+  // Server render, no-JS and reduced-motion all get the finished picture.
+  const still = !hydrated || calm;
 
   return (
-    <section ref={sectionRef} className="relative h-[300vh]">
-      <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
-        <div className="w-full max-w-5xl px-4 sm:px-6">
-          <div className="relative aspect-video w-full overflow-hidden rounded-[2rem] bg-sand">
-            {Array.from({ length: STRIPS }, (_, i) => (
-              <Strip key={i} index={i} src={src} progress={smooth} />
-            ))}
-
-            {/* Contact shadow settles in only once the basket is nearly whole. */}
-            <motion.div
-              style={{ opacity: shadowOpacity }}
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-[18%] bottom-[7%] h-6 rounded-[50%] bg-bark/25 blur-xl"
-            />
-          </div>
-
-          {/* Progress */}
-          <div className="mx-auto mt-6 h-px w-40 overflow-hidden bg-line">
-            <motion.div style={{ scaleX: barScale }} className="h-px w-full origin-left bg-rattan-deep" />
-          </div>
-
-          {/* Captions sit below the image so they never cover the product. */}
-          <div className="relative mx-auto mt-6 h-28 max-w-lg">
-            {PHASES.map((_, i) => (
-              <Caption key={i} index={i} progress={smooth} />
-            ))}
-          </div>
-
-          <motion.p
-            style={{ opacity: hintOpacity }}
-            className="text-center text-xs uppercase tracking-[0.2em] text-bark-soft"
-          >
-            Sepeti örmek için kaydırın ↓
-          </motion.p>
-
-          <motion.div style={{ opacity: ctaOpacity, y: ctaY }}>
-            <Actions />
-          </motion.div>
+    <section className="relative flex min-h-screen flex-col overflow-hidden">
+      {/* The photo is anchored to the bottom at its natural ratio rather than
+          cover-cropped, so the basket is never cut off and its empty cream
+          upper field becomes the space the headline sits in. */}
+      <motion.div
+        style={{
+          ...(still ? {} : { scale }),
+          // Fades the top edge away so the photo reads as page background
+          // rather than a picture sitting in a box.
+        }}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 origin-bottom overflow-hidden"
+      >
+        <div
+          // Width-driven with the aspect ratio intact, anchored to the bottom:
+          // the photo spans the full viewport and its empty upper field is
+          // cropped away, so the basket sits low and nothing is distorted.
+          // Phones widen it slightly so the basket is not tiny.
+          className="absolute bottom-0 left-1/2 w-[138%] -translate-x-1/2 sm:w-[72%] sm:max-w-[940px]"
+          style={{
+            aspectRatio: `${IMG_W} / ${IMG_H}`,
+            // Top and both sides dissolve into the page, so the photo reads as
+            // background rather than a picture sitting in a rectangle.
+            maskImage: EDGE_FADE,
+            maskComposite: "intersect",
+            maskRepeat: "no-repeat",
+            WebkitMaskImage: EDGE_FADE,
+            WebkitMaskComposite: "source-in",
+            WebkitMaskRepeat: "no-repeat",
+          }}
+        >
+          {still ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={src} alt="" aria-hidden="true" className="h-full w-full object-cover" />
+          ) : (
+            Array.from({ length: STRIPS }, (_, i) => (
+              <Strip key={i} index={i} src={src} progress={progress} />
+            ))
+          )}
         </div>
+      </motion.div>
+
+      {/* Softens the photo where the type overlaps it. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-bg from-18% to-transparent to-46%"
+      />
+
+      <div className="relative mx-auto w-full max-w-3xl px-4 pt-16 text-center sm:px-6 md:pt-20">
+        {still ? (
+          <div>
+            <Copy />
+            <Actions className="mt-8" />
+          </div>
+        ) : (
+          <motion.div style={{ opacity: copyOpacity, y: copyY }}>
+            <Copy />
+            <Actions className="mt-8" />
+          </motion.div>
+        )}
       </div>
 
-      {/* The real image, for search engines and anyone without JavaScript. */}
       <noscript>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={ALT} className="w-full rounded-[2rem]" />
+        <img src={src} alt={ALT} className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-3xl" />
       </noscript>
     </section>
   );
