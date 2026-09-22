@@ -66,8 +66,8 @@ export function ReservationForm({
             </motion.span>
             <p className="mt-5 font-display text-xl font-semibold">Talebiniz iletildi</p>
             <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-bark-soft">
-              Eda talebinizi değerlendirip size e-posta gönderecek. Onaylanırsa ödeme
-              bağlantısı aynı e-postada olacak. Şu an hiçbir ödeme alınmadı.
+              Talebiniz onaylanırsa ödeme bağlantısını WhatsApp’tan göndereceğiz.
+              Şu an hiçbir ödeme alınmadı.
             </p>
           </motion.div>
         ) : (
@@ -88,7 +88,14 @@ export function ReservationForm({
 
             <Field name="name" label="Adınız soyadınız" autoComplete="name" required />
             <Field name="email" label="E-posta" type="email" autoComplete="email" required />
-            <Field name="phone" label="Telefon (isteğe bağlı)" type="tel" autoComplete="tel" />
+            <Field
+              name="phone"
+              label="Cep telefonu (WhatsApp)"
+              type="tel"
+              autoComplete="tel"
+              required
+              placeholder="0555 111 22 33"
+            />
 
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium">Not (isteğe bağlı)</span>
@@ -131,12 +138,14 @@ function Field({
   type = "text",
   required,
   autoComplete,
+  placeholder,
 }: {
   name: string;
   label: string;
   type?: string;
   required?: boolean;
   autoComplete?: string;
+  placeholder?: string;
 }) {
   return (
     <label className="block">
@@ -146,6 +155,7 @@ function Field({
         type={type}
         required={required}
         autoComplete={autoComplete}
+        placeholder={placeholder}
         maxLength={160}
         className="w-full rounded-sm border border-hair bg-bg px-4 py-3 text-sm outline-none transition-colors focus:border-rattan"
       />

@@ -7,6 +7,7 @@ import {
   mailReservationDeclined,
 } from "@/lib/mail";
 import { parsePriceToKurus } from "@/lib/money";
+import { formatTrMobile, whatsappLink } from "@/lib/phone";
 import { formatTRY, siteUrl } from "@/lib/brand";
 
 /** How long an approved customer has to pay before the piece is released. */
@@ -140,6 +141,18 @@ export async function POST(request: Request) {
     await mailReservationDeclined(res.email, res.name, res.product_title);
   }
 
+  const payUrl = `${siteUrl()}/odeme/${res.public_id}`;
+
+  // One tap for Eda: WhatsApp opens with the message already written. The
+  // official WhatsApp API needs a verified business, which she does not have,
+  // so a wa.me deep link is the version that actually works.
+  const waText =
+    `Merhaba ${res.name}, ben Sepetim'den. ` +
+    `"${res.product_title}" için talebiniz onaylandı 🧺\n\n` +
+    `Tutar: ${formatTRY(res.price_kurus)}\n` +
+    `Ödeme bağlantınız: ${payUrl}\n\n` +
+    `Bağlantı ${PAY_WINDOW_DAYS} gün geçerli. Sorunuz olursa buradan yazabilirsiniz.`;
+
   await settleMessage(
     cq.message.chat.id,
     cq.message.message_id,
@@ -147,12 +160,21 @@ export async function POST(request: Request) {
       accepted ? "✅ <b>Onaylandı</b>" : "❌ <b>Reddedildi</b>",
       ``,
       `<b>${esc(res.product_title)}</b> — ${formatTRY(res.price_kurus)}`,
-      `👤 ${esc(res.name)} · ${esc(res.email)}`,
+      `👤 ${esc(res.name)}`,
+      res.phone ? `📱 ${esc(formatTrMobile(res.phone))}` : null,
       ``,
       accepted
-        ? `Ödeme bağlantısı e-postayla gönderildi (${PAY_WINDOW_DAYS} gün geçerli).\n<a href="${siteUrl()}/odeme/${res.public_id}">Ödeme sayfası</a>`
+        ? [
+            `<b>👉 <a href="${whatsappLink(res.phone ?? "", waText)}">WhatsApp'tan gönder</a></b>`,
+            `(Dokunun, mesaj hazır gelir — göndere basmanız yeterli.)`,
+            ``,
+            `Bağlantı ${PAY_WINDOW_DAYS} gün geçerli.`,
+            `<a href="${payUrl}">Ödeme sayfasını gör</a>`,
+          ].join("\n")
         : `Müşteriye bilgi verildi. Hiçbir ödeme alınmadı.`,
-    ].join("\n")
+    ]
+      .filter(Boolean)
+      .join("\n")
   );
 
   await answerCallback(cq.id, accepted ? "Onaylandı, e-posta gitti." : "Reddedildi, e-posta gitti.");

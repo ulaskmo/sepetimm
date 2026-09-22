@@ -202,8 +202,16 @@ export function CustomOrderForm() {
               <input name="email" type="email" required maxLength={160} autoComplete="email" className={field} />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium">Telefon (isteğe bağlı)</span>
-              <input name="phone" type="tel" maxLength={40} autoComplete="tel" className={field} />
+              <span className="mb-1.5 block text-sm font-medium">Cep telefonu (WhatsApp)</span>
+              <input
+                name="phone"
+                type="tel"
+                required
+                maxLength={40}
+                autoComplete="tel"
+                placeholder="0555 111 22 33"
+                className={field}
+              />
             </label>
           </fieldset>
 

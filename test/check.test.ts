@@ -166,3 +166,46 @@ test("kısa şifre reddedilir", () => {
   assert.ok(passwordProblem("1234567"));
   assert.equal(passwordProblem("12345678"), null);
 });
+
+const { normalizeTrMobile, formatTrMobile, whatsappLink } = await import("../lib/phone.ts");
+
+test("türkçe cep numaraları tek biçime getirilir", () => {
+  const beklenen = "905551112233";
+  for (const girdi of [
+    "0555 111 22 33",
+    "05551112233",
+    "+90 555 111 22 33",
+    "905551112233",
+    "5551112233",
+    "0090 555 111 22 33",
+    "(0555) 111-22-33",
+  ]) {
+    assert.equal(normalizeTrMobile(girdi), beklenen, `"${girdi}" çevrilemedi`);
+  }
+});
+
+test("geçersiz numara tahmin edilmez, reddedilir", () => {
+  // Sessizce başarısız olan bir numara, müşterinin hiç haber alamaması demek.
+  for (const bad of [
+    "",
+    "555111223",        // eksik hane
+    "05551112233444",   // fazla hane
+    "0212 111 22 33",   // sabit hat, cep değil
+    "04551112233",      // 5 ile başlamıyor
+    "abcdefghij",
+    "+1 555 111 2233",  // Türkiye değil
+  ]) {
+    assert.equal(normalizeTrMobile(bad), null, `"${bad}" reddedilmeliydi`);
+  }
+});
+
+test("numara insana okunur biçimde gösterilir", () => {
+  assert.equal(formatTrMobile("905551112233"), "0555 111 22 33");
+});
+
+test("whatsapp bağlantısı artı ve boşluk içermez", () => {
+  const url = whatsappLink("905551112233", "Merhaba Ayşe, ödeme bağlantınız:");
+  assert.ok(url.startsWith("https://wa.me/905551112233?text="));
+  assert.ok(!url.includes("+"));
+  assert.ok(url.includes("Merhaba%20Ay"));
+});

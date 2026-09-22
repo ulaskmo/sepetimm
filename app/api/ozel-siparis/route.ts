@@ -3,6 +3,7 @@ import { publicId } from "@/lib/ids";
 import { askCustomApproval, esc } from "@/lib/telegram";
 import { mailCustomReceived } from "@/lib/mail";
 import { EMAIL_RE, normalizeEmail } from "@/lib/auth";
+import { normalizeTrMobile } from "@/lib/phone";
 
 /** Telegram refuses photos above 10MB; stay under it. */
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
 
   const name = String(form.get("name") ?? "").trim();
   const email = normalizeEmail(String(form.get("email") ?? ""));
-  const phone = String(form.get("phone") ?? "").trim() || null;
+  const phone = normalizeTrMobile(String(form.get("phone") ?? ""));
   const description = String(form.get("description") ?? "").trim();
   const color = String(form.get("color") ?? "").trim() || null;
 
@@ -42,7 +43,9 @@ export async function POST(request: Request) {
   if (description.length < 10 || description.length > 1500) {
     return bad("Nasıl bir sepet istediğinizi biraz anlatın (en az 10 karakter).");
   }
-  if (phone && phone.length > 40) return bad("Telefon numarası çok uzun.");
+  if (!phone) {
+    return bad("Geçerli bir cep telefonu yazın (örn. 0555 111 22 33). Size WhatsApp'tan döneceğiz.");
+  }
   if (color && color.length > 80) return bad("Renk tercihi çok uzun.");
 
   let width: number | null, depth: number | null, height: number | null;

@@ -28,7 +28,7 @@ export default async function ProductsPage() {
       </div>
 
       {products.length > 0 ? (
-        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid grid-cols-3 gap-x-3 gap-y-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
           {products.map((p, i) => (
             <div key={p.id}>
               <ProductCard product={p} priority={i < 3} />

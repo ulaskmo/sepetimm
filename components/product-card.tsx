@@ -30,12 +30,12 @@ export function ProductCard({ product, priority = false }: { product: Product; p
           )}
         </div>
 
-        <div className="mt-4 flex items-baseline justify-between gap-3">
-          <h3 className="text-[15px] font-medium leading-snug">{product.title}</h3>
-          <span className="shrink-0 text-[14px] tabular-nums">{formatTRY(product.price_kurus)}</span>
+        <div className="mt-3 flex flex-col gap-0.5 sm:mt-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
+          <h3 className="text-[12px] font-medium leading-snug sm:text-[15px]">{product.title}</h3>
+          <span className="shrink-0 text-[12px] tabular-nums sm:text-[14px]">{formatTRY(product.price_kurus)}</span>
         </div>
 
-        <p className="mt-1 text-[12px] uppercase tracking-[0.16em] text-bark-soft">
+        <p className="mt-1 hidden text-[12px] uppercase tracking-[0.16em] text-bark-soft sm:block">
           {product.kind === "unique"
             ? "Tek parça"
             : product.lead_time_days

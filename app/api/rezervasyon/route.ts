@@ -4,6 +4,7 @@ import { askApproval, esc } from "@/lib/telegram";
 import { mailReservationReceived } from "@/lib/mail";
 import { formatTRY, siteUrl } from "@/lib/brand";
 import { EMAIL_RE, normalizeEmail } from "@/lib/auth";
+import { normalizeTrMobile } from "@/lib/phone";
 
 /** Anti-flood: one email may not sit on more than this many open requests. */
 const MAX_OPEN_PER_EMAIL = 5;
@@ -23,13 +24,16 @@ export async function POST(request: Request) {
   const slug = String(body.slug ?? "").trim();
   const name = String(body.name ?? "").trim();
   const email = normalizeEmail(String(body.email ?? ""));
-  const phone = String(body.phone ?? "").trim() || null;
+  // Telefon artık zorunlu: onay mesajı WhatsApp ile gidiyor.
+  const phone = normalizeTrMobile(String(body.phone ?? ""));
   const note = String(body.note ?? "").trim() || null;
 
   if (!slug) return bad("Ürün bulunamadı.");
   if (name.length < 2 || name.length > 120) return bad("Lütfen adınızı yazın.");
   if (!EMAIL_RE.test(email) || email.length > 160) return bad("Geçerli bir e-posta adresi yazın.");
-  if (phone && phone.length > 40) return bad("Telefon numarası çok uzun.");
+  if (!phone) {
+    return bad("Geçerli bir cep telefonu yazın (örn. 0555 111 22 33). Onayı WhatsApp'tan göndereceğiz.");
+  }
   if (note && note.length > 600) return bad("Not 600 karakterden kısa olmalı.");
 
   const products = (await sql`
