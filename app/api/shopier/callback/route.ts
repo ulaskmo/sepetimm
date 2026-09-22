@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
 import { orderId, verifyCallback } from "@/lib/shopier";
-import { mailCoursePaid, mailReservationPaid } from "@/lib/mail";
+import { mailCoursePaid, mailCustomPaid, mailReservationPaid } from "@/lib/mail";
 import { esc, notify } from "@/lib/telegram";
 import { formatTRY, siteUrl } from "@/lib/brand";
 
@@ -28,6 +28,8 @@ export async function POST(request: Request) {
 
   if (parsed.kind === "reservation") {
     await settleReservation(parsed.publicId, result.paymentId);
+  } else if (parsed.kind === "custom") {
+    await settleCustom(parsed.publicId, result.paymentId);
   } else {
     await settleCourse(parsed.publicId, result.paymentId);
   }
@@ -95,5 +97,22 @@ async function settleCourse(publicId: string, paymentId: string) {
   await mailCoursePaid(order.email, title);
   await notify(
     `🎬 <b>Kurs satıldı</b>\n\n<b>${esc(title)}</b> — ${formatTRY(order.price_kurus)}\n✉️ ${esc(order.email)}`
+  );
+}
+
+async function settleCustom(publicId: string, paymentId: string) {
+  const rows = (await sql`
+    update custom_requests
+    set status = 'paid', paid_at = now(), payment_ref = ${paymentId}
+    where public_id = ${publicId} and status = 'accepted'
+    returning name, email, price_kurus
+  `) as unknown as { name: string; email: string; price_kurus: number }[];
+
+  const req = rows[0];
+  if (!req) return;
+
+  await mailCustomPaid(req.email, req.name, req.price_kurus);
+  await notify(
+    `💰 <b>Özel sipariş ödendi</b>\n\n👤 ${esc(req.name)} · ${esc(req.email)}\n${formatTRY(req.price_kurus)}\n\nÖrmeye başlayabilirsiniz.`
   );
 }

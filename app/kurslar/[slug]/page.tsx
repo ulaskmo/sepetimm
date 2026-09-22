@@ -78,7 +78,7 @@ export default async function CoursePage({ params }: PageProps<"/kurslar/[slug]"
                   Tek seferlik ödeme, süresiz erişim. Ödeme sonrası e-postanıza giriş
                   bağlantısı gelir.
                 </p>
-                <CourseBuyForm slug={course.slug} />
+                <CourseBuyForm slug={course.slug} signedIn={Boolean(email)} />
               </>
             )}
           </div>

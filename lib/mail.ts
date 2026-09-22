@@ -124,3 +124,51 @@ export function mailLoginLink(to: string, url: string) {
      <p style="margin:0;line-height:1.6;color:#6b5947;font-size:13px">Bu girişi siz talep etmediyseniz bu e-postayı yok sayabilirsiniz.</p>`
   );
 }
+
+export function mailCustomReceived(to: string, name: string) {
+  return send(
+    to,
+    "Özel sipariş talebiniz bize ulaştı",
+    `<h1 style="margin:0 0 16px;font-size:22px">Merhaba ${name},</h1>
+     <p style="margin:0 0 16px;line-height:1.6">Özel sepet talebiniz, ölçüleriniz ve görseliniz bize ulaştı.</p>
+     <p style="margin:0 0 16px;line-height:1.6">Eda talebinizi inceleyip sizin için bir fiyat belirleyecek ve size tekrar yazacak. <strong>Şu an herhangi bir ödeme yapmanız gerekmiyor.</strong></p>`
+  );
+}
+
+export function mailCustomAccepted(
+  to: string,
+  name: string,
+  priceKurus: number,
+  publicId: string
+) {
+  return send(
+    to,
+    "Özel siparişiniz için fiyat teklifi hazır",
+    `<h1 style="margin:0 0 16px;font-size:22px">Merhaba ${name},</h1>
+     <p style="margin:0 0 16px;line-height:1.6">Eda özel sepet talebinizi kabul etti ve fiyatı belirledi.</p>
+     <p style="margin:0 0 4px;line-height:1.6">Tutar: <strong>${formatTRY(priceKurus)}</strong></p>
+     <p style="margin:0;line-height:1.6;color:#6b5947;font-size:14px">Onaylıyorsanız aşağıdan ödemenizi tamamlayabilirsiniz. Bağlantı 3 gün geçerlidir.</p>
+     ${btn(`${siteUrl()}/odeme/ozel/${publicId}`, "Teklifi gör ve öde")}`
+  );
+}
+
+export function mailCustomDeclined(to: string, name: string) {
+  return send(
+    to,
+    "Özel sipariş talebiniz hakkında",
+    `<h1 style="margin:0 0 16px;font-size:22px">Merhaba ${name},</h1>
+     <p style="margin:0 0 16px;line-height:1.6">Maalesef bu özel sipariş talebinizi şu an karşılayamıyoruz.</p>
+     <p style="margin:0 0 16px;line-height:1.6">Hiçbir ödeme alınmadı. Hazır sepetlerimize göz atmak isterseniz sizi bekliyoruz.</p>
+     ${btn(`${siteUrl()}/urunler`, "Sepetlere bak")}`
+  );
+}
+
+export function mailCustomPaid(to: string, name: string, priceKurus: number) {
+  return send(
+    to,
+    "Özel sipariş ödemeniz alındı",
+    `<h1 style="margin:0 0 16px;font-size:22px">Teşekkürler ${name}!</h1>
+     <p style="margin:0 0 16px;line-height:1.6">Özel sepetiniz için ${formatTRY(priceKurus)} tutarındaki ödemeniz alındı.</p>
+     <p style="margin:0;line-height:1.6">Eda örmeye başlıyor. Hazır olduğunda size tekrar yazacağız.</p>`
+  );
+}

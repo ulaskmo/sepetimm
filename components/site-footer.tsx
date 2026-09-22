@@ -16,6 +16,7 @@ export function SiteFooter() {
           <p className="text-xs uppercase tracking-[0.18em] text-bark-soft">Keşfet</p>
           <ul className="mt-4 space-y-2 text-sm">
             <li><Link className="hover:text-rattan-deep" href="/urunler">Sepetler</Link></li>
+            <li><Link className="hover:text-rattan-deep" href="/ozel-siparis">Özel sipariş</Link></li>
             <li><Link className="hover:text-rattan-deep" href="/kurslar">Video kurslar</Link></li>
             <li><Link className="hover:text-rattan-deep" href="/hikaye">Hikayemiz</Link></li>
             <li><Link className="hover:text-rattan-deep" href="/hesabim">Hesabım</Link></li>

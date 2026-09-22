@@ -97,7 +97,9 @@ test("sipariş numarası tipi ayırt edilir", () => {
     publicId: "xy9",
   });
   assert.deepEqual(orderId.parse(orderId.forCourse("xy9")), { kind: "course", publicId: "xy9" });
+  assert.deepEqual(orderId.parse(orderId.forCustom("xy9")), { kind: "custom", publicId: "xy9" });
   assert.equal(orderId.parse("bozuk"), null);
+  assert.equal(orderId.parse("X-xy9"), null);
 });
 
 test("satılmış tek parça tekrar rezerve edilemez", () => {
@@ -122,4 +124,45 @@ test("public id tahmin edilebilir değil", () => {
   const ids = new Set(Array.from({ length: 500 }, () => publicId()));
   assert.equal(ids.size, 500);
   assert.match(publicId(), /^[23456789abcdefghjkmnpqrstuvwxyz]{12}$/);
+});
+
+const { parsePriceToKurus } = await import("../lib/money.ts");
+const { hashPassword, verifyPassword, passwordProblem } = await import("../lib/password.ts");
+
+test("Telegram'a yazılan fiyat doğru okunur", () => {
+  assert.equal(parsePriceToKurus("1850"), 185000);
+  assert.equal(parsePriceToKurus("1.850"), 185000); // Türkçe binlik ayracı
+  assert.equal(parsePriceToKurus("1.850,50"), 185050);
+  assert.equal(parsePriceToKurus("1850,50"), 185050);
+  assert.equal(parsePriceToKurus("1850.50"), 185050);
+  assert.equal(parsePriceToKurus(" 1850 TL "), 185000);
+  assert.equal(parsePriceToKurus("1850₺"), 185000);
+});
+
+test("anlaşılmayan fiyat tahmin edilmez, reddedilir", () => {
+  // Guessing here would mean charging the wrong amount.
+  for (const bad of ["", "bin sekiz yüz", "1850 lira civarı", "-50", "0", "1,2,3", "abc", "1.85.0"]) {
+    assert.equal(parsePriceToKurus(bad), null, `"${bad}" reddedilmeliydi`);
+  }
+});
+
+test("şifreler scrypt ile saklanır ve doğrulanır", () => {
+  const stored = hashPassword("cok-gizli-sifre");
+  assert.match(stored, /^scrypt\$\d+\$/);
+  assert.ok(!stored.includes("cok-gizli-sifre"));
+  assert.equal(verifyPassword("cok-gizli-sifre", stored), true);
+  assert.equal(verifyPassword("yanlis-sifre", stored), false);
+  // Aynı şifre her seferinde farklı hash üretmeli (rastgele tuz).
+  assert.notEqual(hashPassword("ayni"), hashPassword("ayni"));
+});
+
+test("bozuk hash kaydı girişe izin vermez", () => {
+  for (const bad of ["", "duz-metin", "scrypt$16384$abc", "bcrypt$1$a$b", "scrypt$1$a$b"]) {
+    assert.equal(verifyPassword("herhangi", bad), false);
+  }
+});
+
+test("kısa şifre reddedilir", () => {
+  assert.ok(passwordProblem("1234567"));
+  assert.equal(passwordProblem("12345678"), null);
 });

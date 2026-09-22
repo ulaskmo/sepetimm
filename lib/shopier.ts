@@ -142,13 +142,18 @@ export function verifyCallback(form: URLSearchParams): CallbackResult | null {
   };
 }
 
-/** Order ids carry their own type so one callback endpoint can serve both flows. */
+/** Order ids carry their own type so one callback endpoint serves every flow. */
+const KINDS = { R: "reservation", C: "course", O: "custom" } as const;
+
+export type OrderKind = (typeof KINDS)[keyof typeof KINDS];
+
 export const orderId = {
   forReservation: (publicId: string) => `R-${publicId}`,
   forCourse: (publicId: string) => `C-${publicId}`,
-  parse: (id: string) => {
-    const m = /^([RC])-(.+)$/.exec(id);
+  forCustom: (publicId: string) => `O-${publicId}`,
+  parse: (id: string): { kind: OrderKind; publicId: string } | null => {
+    const m = /^([RCO])-(.+)$/.exec(id);
     if (!m) return null;
-    return { kind: m[1] === "R" ? ("reservation" as const) : ("course" as const), publicId: m[2] };
+    return { kind: KINDS[m[1] as keyof typeof KINDS], publicId: m[2] };
   },
 };

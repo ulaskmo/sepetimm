@@ -8,6 +8,7 @@ import { BRAND } from "@/lib/brand";
 
 const NAV = [
   { href: "/urunler", label: "Sepetler" },
+  { href: "/ozel-siparis", label: "Özel Sipariş" },
   { href: "/kurslar", label: "Kurslar" },
   { href: "/hikaye", label: "Hikayemiz" },
   { href: "/hesabim", label: "Hesabım" },

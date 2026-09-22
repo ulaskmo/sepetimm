@@ -1,6 +1,6 @@
 import { sql, type Course } from "@/lib/db";
 import { publicId } from "@/lib/ids";
-import { EMAIL_RE, normalizeEmail } from "@/lib/auth";
+import { currentEmail } from "@/lib/auth";
 
 function bad(error: string, status = 400) {
   return Response.json({ error }, { status });
@@ -15,11 +15,16 @@ export async function POST(request: Request) {
   }
 
   const slug = String(body.slug ?? "").trim();
-  const name = String(body.name ?? "").trim();
-  const email = normalizeEmail(String(body.email ?? ""));
 
-  if (name.length < 2 || name.length > 120) return bad("Lütfen adınızı yazın.");
-  if (!EMAIL_RE.test(email) || email.length > 160) return bad("Geçerli bir e-posta adresi yazın.");
+  // The course is tied to the signed-in account. Taking the email from the
+  // request body would let anyone buy a course into someone else's account.
+  const email = await currentEmail();
+  if (!email) return bad("Satın almak için giriş yapmanız gerekiyor.", 401);
+
+  const users = (await sql`select name from users where lower(email) = ${email} limit 1`) as unknown as {
+    name: string;
+  }[];
+  const name = users[0]?.name ?? "Kursiyer";
 
   const courses = (await sql`
     select * from courses where slug = ${slug} and published = true limit 1
