@@ -44,13 +44,26 @@ export default async function CoursePayPage({ params }: PageProps<"/odeme/kurs/[
   }
 
   const [name, ...rest] = (row.name ?? "Kursiyer").trim().split(/\s+/);
-  const form = buildPayForm({
-    orderId: orderId.forCourse(row.public_id),
-    productName: row.course_title,
-    productType: PRODUCT_TYPE.digital,
-    priceKurus: row.price_kurus,
-    buyer: { name, surname: rest.join(" ") || name, email: row.email },
-  });
+  let form: ReturnType<typeof buildPayForm>;
+  try {
+    form = buildPayForm({
+      orderId: orderId.forCourse(row.public_id),
+      productName: row.course_title,
+      productType: PRODUCT_TYPE.digital,
+      priceKurus: row.price_kurus,
+      buyer: { name, surname: rest.join(" ") || name, email: row.email },
+    });
+  } catch (err) {
+    // Shopier anahtarları eksik ya da bozuk. Müşteriye çökme sayfası
+    // göstermek yerine durumu anlatıyoruz; sipariş kaydı duruyor.
+    console.error("[ödeme] form oluşturulamadı", err);
+    return (
+      <Notice
+        title="Ödeme şu anda başlatılamıyor"
+        body="Ödeme altyapısı henüz bağlanmadı. Siparişiniz kayıtlı ve duruyor — hazır olduğunda size ödeme bağlantısını göndereceğiz."
+      />
+    );
+  }
 
   return (
     <div className="mx-auto max-w-lg px-4 py-20 sm:px-6">

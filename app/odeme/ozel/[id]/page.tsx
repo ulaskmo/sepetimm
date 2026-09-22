@@ -71,13 +71,26 @@ export default async function CustomPayPage({ params }: PageProps<"/odeme/ozel/[
     : `${row.width_cm ?? "?"} × ${row.depth_cm ?? "?"} × ${row.height_cm ?? "?"} cm`;
 
   const [name, ...rest] = row.name.trim().split(/\s+/);
-  const form = buildPayForm({
-    orderId: orderId.forCustom(row.public_id),
-    productName: `Özel sepet siparişi${size ? ` (${size})` : ""}`,
-    productType: PRODUCT_TYPE.physical,
-    priceKurus: row.price_kurus,
-    buyer: { name, surname: rest.join(" ") || name, email: row.email, phone: row.phone },
-  });
+  let form: ReturnType<typeof buildPayForm>;
+  try {
+    form = buildPayForm({
+      orderId: orderId.forCustom(row.public_id),
+      productName: `Özel sepet siparişi${size ? ` (${size})` : ""}`,
+      productType: PRODUCT_TYPE.physical,
+      priceKurus: row.price_kurus,
+      buyer: { name, surname: rest.join(" ") || name, email: row.email, phone: row.phone },
+    });
+  } catch (err) {
+    // Shopier anahtarları eksik ya da bozuk. Müşteriye çökme sayfası
+    // göstermek yerine durumu anlatıyoruz; sipariş kaydı duruyor.
+    console.error("[ödeme] form oluşturulamadı", err);
+    return (
+      <Notice
+        title="Ödeme şu anda başlatılamıyor"
+        body="Ödeme altyapısı henüz bağlanmadı. Siparişiniz kayıtlı ve duruyor — hazır olduğunda size ödeme bağlantısını göndereceğiz."
+      />
+    );
+  }
 
   return (
     <div className="mx-auto max-w-lg px-4 py-20 sm:px-6">
