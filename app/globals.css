@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #fbf7f1;
+  --bg-raised: #ffffff;
+  --sand: #efe3d5;
+  --rattan: #c79a6b;
+  --rattan-deep: #a97b4d;
+  --bark: #4a3a2c;
+  --bark-soft: #6b5947;
+  --sage: #7e8f6e;
+  --line: #e3d5c3;
+  --shadow: 24px 24px 64px -32px rgb(74 58 44 / 0.28);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1c1712;
+    --bg-raised: #251e18;
+    --sand: #33291f;
+    --rattan: #d9ad7f;
+    --rattan-deep: #c79a6b;
+    --bark: #f2e7d9;
+    --bark-soft: #c2b3a1;
+    --sage: #9bab8b;
+    --line: #3b3025;
+    --shadow: 24px 24px 64px -32px rgb(0 0 0 / 0.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1c1712;
+  --bg-raised: #251e18;
+  --sand: #33291f;
+  --rattan: #d9ad7f;
+  --rattan-deep: #c79a6b;
+  --bark: #f2e7d9;
+  --bark-soft: #c2b3a1;
+  --sage: #9bab8b;
+  --line: #3b3025;
+  --shadow: 24px 24px 64px -32px rgb(0 0 0 / 0.6);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-raised: var(--bg-raised);
+  --color-sand: var(--sand);
+  --color-rattan: var(--rattan);
+  --color-rattan-deep: var(--rattan-deep);
+  --color-bark: var(--bark);
+  --color-bark-soft: var(--bark-soft);
+  --color-sage: var(--sage);
+  --color-line: var(--line);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--bg);
+  color: var(--bark);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Woven paper-stick texture: two diagonal weaves crossing, like the baskets. */
+.weave-texture {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgb(199 154 107 / 0.07) 0 2px,
+      transparent 2px 9px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgb(199 154 107 / 0.07) 0 2px,
+      transparent 2px 9px
+    );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
