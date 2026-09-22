@@ -30,10 +30,32 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-20 py-12 md:space-y-28 md:py-20">
-      {/* 1. HERO — Minimalist & Direct */}
-      <section className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="grid items-center gap-10 md:grid-cols-12 md:gap-14">
-          <div className="md:col-span-6">
+      {/* 1. HERO — sepet arka planda, metin üstünde, telefonda tek ekran */}
+      <section className="relative flex min-h-[calc(100svh-4rem)] items-start overflow-hidden pt-8 md:items-center md:pt-0">
+        {/* Arka plan sepeti. Kesilmiş PNG, beyaz fon yok — sayfanın kendi
+            rengi görünüyor. Telefonda alta, geniş ekranda sağa yaslanıyor. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] md:inset-y-0 md:left-auto md:right-0 md:h-full md:w-[56%]"
+        >
+          <Image
+            src="/urunler/oval-kapakli-sepet.png"
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 56vw"
+            className="object-contain object-bottom md:object-right md:object-contain"
+          />
+        </div>
+
+        {/* Metnin okunabilirliği için sepetin üzerine ince bir perde. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/40 via-bg/85 to-bg md:bg-gradient-to-r md:from-bg md:via-bg/80 md:to-transparent"
+        />
+
+        <div className="relative mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 md:py-14">
+          <div className="max-w-xl">
             <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">
               Atölye · El Örgüsü
             </p>
@@ -73,22 +95,6 @@ export default async function HomePage() {
               >
                 Özel sipariş ver →
               </Link>
-            </div>
-          </div>
-
-          <div className="md:col-span-6">
-            <div className="relative aspect-4/5 overflow-hidden border border-hair bg-white">
-              <Image
-                src="/urunler/oval-kapakli-sepet.jpg"
-                alt="Kapaklı oval hasır sepet — keten astarlı, dantel detaylı"
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-contain"
-              />
-              <span className="pointer-events-none absolute bottom-3 left-3 bg-bark/85 px-2.5 py-1 text-[11px] font-medium text-bg backdrop-blur-xs">
-                Tek parça · El örgüsü
-              </span>
             </div>
           </div>
         </div>
