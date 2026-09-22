@@ -106,7 +106,34 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 3. ŞU AN MÜSAİT (ÜRÜNLER) */}
+      {/* 3. HER AÇIDAN — VİDEO BÖLÜMÜ */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="grid items-center gap-10 md:grid-cols-12 md:gap-14">
+          <div className="md:col-span-5">
+            <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Her açıdan</p>
+            <h2 className="mt-3 font-display text-[clamp(1.7rem,3vw,2.4rem)] font-semibold leading-tight">
+              Fotoğrafın göstermediği detaylar
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-bark-soft">
+              File örgü gövde, elde işlenmiş çiçek motifleri, kumaş astar ve metal ayaklı
+              hakiki deri taban.
+            </p>
+          </div>
+
+          <div className="md:col-span-7">
+            <div className="overflow-hidden border border-hair bg-sand shadow-[var(--shadow)]">
+              <HeroVideo
+                src="/video/annem-sepet.mp4"
+                poster="/video/annem-sepet-poster.jpg"
+                label="Çiçek işlemeli el örgüsü çanta, dönen platformda"
+                className="aspect-video w-full"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. ŞU AN MÜSAİT (ÜRÜNLER) */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex items-end justify-between border-b border-hair pb-5">
           <div>
@@ -147,33 +174,6 @@ export default async function HomePage() {
             </p>
           </div>
         )}
-      </section>
-
-      {/* 4. HER AÇIDAN — VİDEO BÖLÜMÜ (Preserved as Requested) */}
-      <section className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="grid items-center gap-10 md:grid-cols-12 md:gap-14">
-          <div className="md:col-span-5">
-            <p className="text-xs uppercase tracking-[0.2em] text-bark-soft">Her açıdan</p>
-            <h2 className="mt-3 font-display text-[clamp(1.7rem,3vw,2.4rem)] font-semibold leading-tight">
-              Fotoğrafın göstermediği detaylar
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-bark-soft">
-              File örgü gövde, elde işlenmiş çiçek motifleri, kumaş astar ve metal ayaklı
-              hakiki deri taban.
-            </p>
-          </div>
-
-          <div className="md:col-span-7">
-            <div className="overflow-hidden border border-hair bg-sand shadow-[var(--shadow)]">
-              <HeroVideo
-                src="/video/annem-sepet.mp4"
-                poster="/video/annem-sepet-poster.jpg"
-                label="Çiçek işlemeli el örgüsü çanta, dönen platformda"
-                className="aspect-video w-full"
-              />
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* 5. SÜREÇ — Kısa ve Net */}
