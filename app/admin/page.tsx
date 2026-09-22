@@ -31,9 +31,12 @@ const STATUS_TR: Record<string, string> = {
 };
 
 export default async function AdminPage({ searchParams }: PageProps<"/admin">) {
-  if (!(await isAdmin())) return <LoginGate />;
+  const { duzenle, kurs, hata } = await searchParams;
 
-  const { duzenle, kurs } = await searchParams;
+  if (!(await isAdmin())) {
+    return <LoginGate error={Array.isArray(hata) ? hata[0] : hata} />;
+  }
+
   const editProductId = Number(Array.isArray(duzenle) ? duzenle[0] : duzenle) || 0;
   const editCourseId = Number(Array.isArray(kurs) ? kurs[0] : kurs) || 0;
 
@@ -156,10 +159,22 @@ export default async function AdminPage({ searchParams }: PageProps<"/admin">) {
   );
 }
 
-function LoginGate() {
+function LoginGate({ error }: { error?: string }) {
+  const message =
+    error === "sifre"
+      ? "Şifre hatalı. Tekrar deneyin."
+      : error === "kurulum"
+        ? "ADMIN_PASSWORD tanımlı değil. Sunucu ortam değişkenlerini kontrol edin."
+        : null;
+
   return (
     <div className="mx-auto max-w-sm px-4 py-24 sm:px-6">
       <h1 className="font-display text-2xl font-semibold">Yönetim girişi</h1>
+      {message && (
+        <p role="alert" className="mt-5 border border-hair bg-raised px-4 py-3 text-sm text-bark">
+          {message}
+        </p>
+      )}
       <form action={actions.login} className="mt-8 space-y-4">
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium">Şifre</span>

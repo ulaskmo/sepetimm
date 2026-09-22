@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { sql } from "@/lib/db";
 import { adminCookieValue, isAdmin } from "@/lib/auth";
@@ -28,7 +29,11 @@ function imageList(input: FormDataEntryValue | null): string[] {
 export async function login(formData: FormData) {
   const password = String(formData.get("password") ?? "");
   const expected = process.env.ADMIN_PASSWORD;
-  if (!expected || password !== expected) throw new Error("Şifre hatalı.");
+  // A thrown error inside a server action renders as a crash page in
+  // production — Next hides the message. Redirect back with a flag instead,
+  // which also works with no JavaScript at all.
+  if (!expected) redirect("/admin?hata=kurulum");
+  if (password !== expected) redirect("/admin?hata=sifre");
 
   (await cookies()).set("sepetim_admin", adminCookieValue(expected), {
     httpOnly: true,
