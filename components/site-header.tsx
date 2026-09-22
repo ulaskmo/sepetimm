@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { BRAND } from "@/lib/brand";
 
 const NAV = [
@@ -12,14 +11,21 @@ const NAV = [
   { href: "/hikaye", label: "Hikaye" },
 ];
 
+/**
+ * The mobile menu is a native <details>, not React state.
+ *
+ * It previously used useState, which meant it only worked once React had
+ * hydrated — and on at least one real phone it never did, leaving every
+ * onClick on the page dead while links kept working. <details> is handled by
+ * the browser itself, so the menu opens with no JavaScript at all.
+ */
 export function SiteHeader() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-hair bg-bg">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-5 py-4 lg:px-10">
-        <Link href="/" onClick={() => setOpen(false)} className="flex items-baseline gap-2.5">
+      <div className="relative mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-5 py-4 lg:px-10">
+        <Link href="/" className="flex items-baseline gap-2.5">
           <span className="font-display text-[1.35rem] font-semibold leading-none tracking-tight">
             {BRAND.name}
           </span>
@@ -58,52 +64,36 @@ export function SiteHeader() {
             Hesabım
           </Link>
 
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-label={open ? "Menüyü kapat" : "Menüyü aç"}
-            aria-controls="mobil-menu"
-            // 44x44 is the minimum reliable tap target on a phone; the old
-            // 32x32 button was small enough that taps simply missed it.
-            style={{ touchAction: "manipulation" }}
-            className="-mr-2.5 flex h-11 w-11 flex-col items-center justify-center gap-[5px] md:hidden"
-          >
-            <span
-              aria-hidden="true"
-              className={`h-px w-5 bg-bark transition-transform duration-300 ${
-                open ? "translate-y-[3px] rotate-45" : ""
-              }`}
-            />
-            <span
-              aria-hidden="true"
-              className={`h-px w-5 bg-bark transition-transform duration-300 ${
-                open ? "-translate-y-[3px] -rotate-45" : ""
-              }`}
-            />
-          </button>
-        </div>
-      </div>
+          <details className="group md:hidden [&_summary::-webkit-details-marker]:hidden">
+            <summary
+              aria-label="Menü"
+              style={{ touchAction: "manipulation" }}
+              className="-mr-2.5 flex h-11 w-11 cursor-pointer list-none flex-col items-center justify-center gap-[5px]"
+            >
+              <span
+                aria-hidden="true"
+                className="h-px w-5 bg-bark transition-transform duration-300 group-open:translate-y-[3px] group-open:rotate-45"
+              />
+              <span
+                aria-hidden="true"
+                className="h-px w-5 bg-bark transition-transform duration-300 group-open:-translate-y-[3px] group-open:-rotate-45"
+              />
+            </summary>
 
-      <div
-        id="mobil-menu"
-        className={`overflow-hidden border-t border-hair transition-[max-height] duration-300 md:hidden ${
-          open ? "max-h-72" : "max-h-0 border-t-0"
-        }`}
-      >
-        <ul className="px-5 py-2">
-          {[...NAV, { href: "/hesabim", label: "Hesabım" }].map((item) => (
-            <li key={item.href} className="border-b border-hair last:border-0">
-              <Link
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="block py-4 text-[15px]"
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+            {/* Anchored to the header bar, so it drops full-width beneath it. */}
+            <div className="absolute inset-x-0 top-full border-t border-hair bg-bg">
+              <ul className="px-5">
+                {[...NAV, { href: "/hesabim", label: "Hesabım" }].map((item) => (
+                  <li key={item.href} className="border-b border-hair last:border-0">
+                    <Link href={item.href} className="block py-4 text-[15px]">
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </details>
+        </div>
       </div>
     </header>
   );
