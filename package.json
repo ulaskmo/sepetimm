@@ -13,6 +13,8 @@
     "db:all": "node scripts/db.mjs db/schema.sql db/seed-urunler.sql"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1137.0",
+    "@aws-sdk/s3-request-presigner": "^3.1137.0",
     "@neondatabase/serverless": "^1.1.0",
     "motion": "^13.4.0",
     "next": "16.3.5",
@@ -21,6 +23,7 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@neon/config": "^1.7.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.2",

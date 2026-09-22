@@ -1,4 +1,5 @@
 import type { Course, Product } from "@/lib/db";
+import { ProductImages } from "@/components/product-images";
 
 const input =
   "w-full rounded-sm border border-hair bg-bg px-4 py-2.5 text-sm outline-none focus:border-rattan";
@@ -59,12 +60,10 @@ export function ProductForm({
         <textarea name="description" rows={4} defaultValue={product?.description} className={`${input} resize-y`} />
       </Field>
 
-      <Field
-        label="Fotoğraflar"
-        hint="Her satıra bir adres. Şimdilik hazır bir görsel adresi yapıştırın (ör. /urunler/hasir-oval-sepet.jpg)."
-      >
-        <textarea name="images" rows={4} defaultValue={product?.images.join("\n")} className={`${input} resize-y`} />
-      </Field>
+      <div className="sm:col-span-2">
+        <span className="mb-1.5 block text-sm font-medium">Fotoğraflar</span>
+        <ProductImages initial={product?.images ?? []} />
+      </div>
 
       <Field label="Üretim tipi">
         <select name="kind" defaultValue={product?.kind ?? "unique"} className={input}>
