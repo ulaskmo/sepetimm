@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
 import { orderId, verifyCallback } from "@/lib/shopier";
 import { mailCoursePaid, mailReservationPaid } from "@/lib/mail";
@@ -64,6 +65,10 @@ async function settleReservation(publicId: string, paymentId: string) {
     products[0]?.title ??
     ((await sql`select title from products where id = ${res.product_id}`)[0]?.title as string) ??
     "Sepet";
+
+  // The piece just left the shop — drop it from the cached listings.
+  revalidatePath("/urunler");
+  revalidatePath("/");
 
   await mailReservationPaid(res.email, res.name, title, res.price_kurus);
   await notify(

@@ -62,21 +62,16 @@ export function StaggerItem({ children, className }: { children: ReactNode; clas
   );
 }
 
-/** Headline that assembles word by word. */
+/** Headline that assembles word by word. Pure CSS — see `.word-up` in globals. */
 export function WordsUp({ text, className }: { text: string; className?: string }) {
   return (
-    <span className={className}>
+    <span className={`word-up ${className ?? ""}`}>
       {text.split(" ").map((word, i) => (
-        <span key={`${word}-${i}`} className="inline-block overflow-hidden align-bottom">
-          <motion.span
-            className="inline-block"
-            initial={{ y: "110%" }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.9, delay: 0.1 + i * 0.07, ease: EASE }}
-          >
+        <span key={`${word}-${i}`}>
+          <span style={{ animationDelay: `${0.1 + i * 0.07}s` }}>
             {word}
-            {" "}
-          </motion.span>
+            {"\u00A0"}
+          </span>
         </span>
       ))}
     </span>

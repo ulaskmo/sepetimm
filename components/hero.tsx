@@ -7,8 +7,6 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { WordsUp } from "./motion-primitives";
 import { BRAND } from "@/lib/brand";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
-
 export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -25,15 +23,12 @@ export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 pb-20 pt-10 sm:px-6 md:grid-cols-2 md:gap-14 md:pb-28 md:pt-16">
         <motion.div style={{ y: copyY, opacity: copyOpacity }} className="order-2 md:order-1">
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: EASE }}
-            className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-raised/70 px-4 py-1.5 text-[11px] uppercase tracking-[0.18em] text-bark-soft backdrop-blur"
+          <p
+            className="rise-in mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-raised/70 px-4 py-1.5 text-[11px] uppercase tracking-[0.18em] text-bark-soft backdrop-blur"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-sage" />
             {BRAND.city}&apos;dan el emeği
-          </motion.p>
+          </p>
 
           <h1 className="font-display text-[clamp(2.4rem,7vw,4.2rem)] font-semibold leading-[1.03] tracking-tight">
             <WordsUp text="Geri dönüşümlü kağıttan" />
@@ -43,22 +38,18 @@ export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
             </span>
           </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5, ease: EASE }}
-            className="mt-6 max-w-md text-base leading-relaxed text-bark-soft sm:text-lg"
+          <p
+            style={{ animationDelay: "0.5s" }}
+            className="rise-in mt-6 max-w-md text-base leading-relaxed text-bark-soft sm:text-lg"
           >
             Atılacak kağıtlar ince çubuklara sarılır, boyanır ve saatler süren bir
             sabırla örülür. Makine yok, kalıp yok — her sepet elden çıkar ve
             hiçbiri diğerinin aynısı değildir.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.66, ease: EASE }}
-            className="mt-9 flex flex-wrap items-center gap-3"
+          <div
+            style={{ animationDelay: "0.66s" }}
+            className="rise-in mt-9 flex flex-wrap items-center gap-3"
           >
             <Link
               href="/urunler"
@@ -73,16 +64,11 @@ export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
             >
               Örmeyi öğren
             </Link>
-          </motion.div>
+          </div>
         </motion.div>
 
         <div className="order-1 md:order-2">
-          <motion.div
-            initial={{ opacity: 0, scale: 1.06, filter: "blur(14px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            transition={{ duration: 1.3, ease: EASE }}
-            className="relative aspect-4/5 overflow-hidden rounded-[2rem] shadow-[var(--shadow)]"
-          >
+          <div className="photo-in relative aspect-4/5 overflow-hidden rounded-[2rem] shadow-[var(--shadow)]">
             <motion.div style={{ y: imageY, scale: imageScale }} className="absolute inset-0">
               <Image
                 src={image}
@@ -94,11 +80,9 @@ export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
               />
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.1, ease: EASE }}
-              className="absolute bottom-4 left-4 right-4 flex items-center gap-3 rounded-2xl border border-white/25 bg-black/35 px-4 py-3 text-white backdrop-blur-md"
+            <div
+              style={{ animationDelay: "1.1s" }}
+              className="rise-in absolute bottom-4 left-4 right-4 flex items-center gap-3 rounded-2xl border border-white/25 bg-black/35 px-4 py-3 text-white backdrop-blur-md"
             >
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/15 text-sm">
                 ✿
@@ -107,8 +91,8 @@ export function Hero({ image, imageAlt }: { image: string; imageAlt: string }) {
                 Her sepette <strong className="font-semibold">@{BRAND.handle}</strong> deri
                 markası — elden çıktığının imzası.
               </p>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
